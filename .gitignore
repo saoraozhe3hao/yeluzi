@@ -1,0 +1,10 @@
+.idea
+.metadata
+.settings/
+.project
+.target
+target/
+node_modules/
+dist/
+/package.json
+/package-lock.json

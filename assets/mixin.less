@@ -1,0 +1,118 @@
+/*  init start */
+.text-overflow{
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, p, td, strong {
+  padding: 0;
+  margin: 0;
+  font-family: 'Microsoft Yahei','宋体',Arial;
+  box-sizing: border-box;
+}
+li {
+  list-style: none;
+}
+.clearfix:after{
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+.clearfix{
+  zoom:1;
+}
+.chedao .hidden{
+  display: none;
+}
+/*  init end */
+
+/* 列表页面 start */
+.list-top{
+  padding: 0 20px;
+  line-height: 70px;
+  border-bottom: 1px solid #eee;
+  .add-btn{
+    float: right;
+    margin: 15px 0 0 10px;
+  }
+  .input-with-select{
+    width: 240px;
+    float: right;
+    padding:15px 0;
+  }
+}
+.list-filter{
+  float: right;
+  padding: 15px 20px;
+}
+.list-table{
+  padding: 0 20px;
+  .el-icon-show-more{
+    transform: translate(0,2px) rotate(45deg);
+    &:after{
+      content: "\E60E";
+    }
+  }
+  .table-image{
+    width: 100%;
+  }
+}
+.list-bottom{
+  padding: 0 20px;
+  line-height: 66px;
+  margin: 0 0 0 40px;
+  &:after{
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+  }
+  .batch-operations{
+    float: left;
+  }
+  .el-pagination{
+    float: right;
+    padding: 19px 0;
+  }
+}
+/* 列表页面 end */
+
+/* 添加页面 start */
+.add-top{
+  padding: 20px 20px;
+  border-bottom: 1px solid #eee;
+}
+.add-form{
+  padding: 0 20px;
+  .add-tip{
+    line-height: 40px;
+    text-align: right;
+    span{
+      color: red;
+    }
+  }
+}
+/* 添加页面 end */
+
+/* 详情页面 start */
+.detail-top{
+  padding: 20px 20px;
+  border-bottom: 1px solid #eee;
+}
+.detail-form{
+  padding: 20px 20px 0;
+}
+/* 详情页面 end */
+
+/* Element UI 定制 开始 */
+.el-table__body-wrapper .el-popover__reference{
+  display: inline-block;
+}
+.el-dialog__footer{
+  text-align: center;
+}
+/* Element UI 定制 结束 */
