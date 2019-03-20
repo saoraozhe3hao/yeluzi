@@ -1,4 +1,4 @@
-#### Vue项目导引
+#### Vue项目导引 
 1、安装 nodejs
 2、安装 webpack 工具：npm install -g webpack-cli
 3、安装项目依赖：在项目根目录下执行 npm install
