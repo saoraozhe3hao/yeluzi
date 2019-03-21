@@ -21,6 +21,7 @@ import Merchant from './user/merchant/List'
 import TipOff from './user/tipOff/List'
 import Operator from './user/operator/List'
 import Product from './product/product/List'
+import Comment from './product/comment/List'
 
 import SupplierBasic from './supplierMine/BasicInfo'
 import SupplierPrice from './supplierCommodity/price/List'
@@ -48,6 +49,10 @@ export default new Router({
       {
           path: '/product',   // 商品 - 商品
           component: Product
+      },
+      {
+          path: '/comment',   // 商品 - 评价
+          component: Comment
       },
 
       {

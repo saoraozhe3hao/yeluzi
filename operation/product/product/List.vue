@@ -9,7 +9,7 @@
         <div class="list-table">
             <el-table ref="multipleTable" :data="table.data">
                 <el-table-column prop="id" label="ID" width="100px"></el-table-column>
-                <el-table-column prop="title" label="标题" width="100px"></el-table-column>
+                <el-table-column prop="name" label="名称" width="100px"></el-table-column>
                 <el-table-column prop="merchantId" label="商户ID" width="100px"></el-table-column>
                 <el-table-column prop="merchantName" label="商户" width="100px"></el-table-column>
                 <el-table-column prop="timeRange" label="时间范围" width="100px"></el-table-column>
