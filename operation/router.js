@@ -3,13 +3,16 @@ import Router from 'vue-router'
 import BasicInfo from './mine/BasicInfo'
 import ResetPwd from './mine/ResetPwd'
 
-import Customer from './user/customer/List'
-import Merchant from './user/merchant/List'
-import TipOff from './user/tipOff/List'
 import Operator from './user/operator/List'
+import Customer from './user/customer/List'
+import Message from './user/message/List'
 
 import Product from './product/product/List'
-import Comment from './product/comment/List'
+import Merchant from './product/merchant/List'
+import TipOff from './product/tipOff/List'
+
+import Order from './order/order/List'
+import Comment from './order/comment/List'
 
 export default new Router({
   routes: [
@@ -23,20 +26,16 @@ export default new Router({
       },
 
       {
+          path: '/operator',   // 用户 - 运营人员
+          component: Operator
+      },
+      {
           path: '/customer',      // 用户 - 客户
           component: Customer
       },
       {
-          path: '/merchant',      // 用户 - 商户
-          component: Merchant
-      },
-      {
-          path: '/tipOff',      // 用户 - 商户举报
-          component: TipOff
-      },
-      {
-          path: '/operator',   // 用户 - 运营人员
-          component: Operator
+          path: '/message',      // 用户 - 用户留言
+          component: Message
       },
 
       {
@@ -44,8 +43,21 @@ export default new Router({
           component: Product
       },
       {
-          path: '/comment',   // 商品 - 评价
+          path: '/merchant',      // 商品 - 商户
+          component: Merchant
+      },
+      {
+          path: '/tipOff',      // 商品 - 商户举报
+          component: TipOff
+      },
+
+      {
+          path: '/comment',   // 订单 - 评价
           component: Comment
+      },
+      {
+          path: '/order',   // 订单 - 订单
+          component: Order
       },
   ]
 })

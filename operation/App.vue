@@ -49,7 +49,20 @@
                             },
                             {
                                 right: 'customer',
-                                label: '客户'
+                                label: '用户'
+                            },
+                            {
+                                right: 'message',
+                                label: '用户留言'
+                            }
+                        ]
+                    },
+                    {
+                        label: '商品管理',
+                        subs: [
+                            {
+                                right: 'product',
+                                label: '商品'
                             },
                             {
                                 right: 'merchant',
@@ -62,24 +75,15 @@
                         ]
                     },
                     {
-                        label: '商品管理',
-                        subs: [
-                            {
-                                right: 'product',
-                                label: '商品'
-                            },
-                            {
-                                right: 'comment',
-                                label: '评价'
-                            }
-                        ]
-                    },
-                    {
                         label: '订单管理',
                         subs: [
                             {
                                 right: 'order',
                                 label: '订单'
+                            },
+                            {
+                                right: 'comment',
+                                label: '评价'
                             }
                         ]
                     },

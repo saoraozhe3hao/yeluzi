@@ -18,7 +18,7 @@ function stub() {
                 role: "角色" + Random.integer(0),
                 rights: ['order', 'order.all', 'pastOrder.all', 'product', 'product.all',
                     'pastProduct', 'pastProduct.all', 'comment', 'comment.all', 'operator', 'operator.all',
-                    'merchant', 'merchant.all', 'customer', 'customer.all', 'tipOff', 'tipOff.all']
+                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','tipOff', 'tipOff.all']
             }
         }
     });
@@ -206,6 +206,65 @@ function stub() {
                 payTime: Random.datetime(),
                 useTime: Random.datetime(),
                 commentTime: Random.datetime()
+            });
+        }
+        return {
+            code: "0",
+            data: data,
+            recordsTotal: Random.integer(15, 550)
+        }
+    });
+    // 订单 列表
+    Mock.mock(/\/admin\/order/, function () {
+        let data = [];
+        for (let i = 0; i < 10; i++) {
+            data.push({
+                id: Random.integer(100000000, 200000000),
+                customerId: Random.integer(0),
+                customerName: "客户" + Random.integer(0),
+                merchantId: Random.integer(100000000, 200000000),
+                merchantName: "商户" + Random.integer(0),
+                productId: Random.integer(0),
+                productName: "商品" + Random.integer(0),
+                payTime: Random.datetime(),
+                orderTime: Random.datetime(),
+                useTime: Random.datetime(),
+                total: Random.integer(0,1000),
+                status: Random.pick(['待使用','已使用','已过期','已退款']),
+                customerNum: Random.integer(0,100),
+                roomNum: Random.integer(0,10),
+                bedNum: Random.integer(0,10),
+                refunder: "运营员" + Random.integer(0),
+            });
+        }
+        return {
+            code: "0",
+            data: data,
+            recordsTotal: Random.integer(15, 550)
+        }
+    });
+    // 用户留言 分页列表
+    Mock.mock(/\/admin\/message/, function () {
+        let data = [];
+        for (let i = 0; i < 10; i++) {
+            data.push({
+                id: Random.integer(0),
+                customerId: Random.integer(0),
+                customerName: "客户" + Random.integer(0),
+                detail: "举报详情" + Random.integer(0),
+                replies: [
+                    {
+                        operator: "运营人" + Random.integer(0),
+                        time: Random.date(),
+                        content: "内容" + Random.integer(0)
+                    },
+                    {
+                        operator: "运营人" + Random.integer(0),
+                        time: Random.date(),
+                        content: "内容" + Random.integer(0)
+                    }
+                ],
+                status: Random.pick(['未回复', '已回复'])
             });
         }
         return {
