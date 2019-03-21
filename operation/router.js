@@ -20,8 +20,9 @@ import Customer from './user/customer/List'
 import Merchant from './user/merchant/List'
 import TipOff from './user/tipOff/List'
 import Operator from './user/operator/List'
+import Product from './product/product/List'
+
 import SupplierBasic from './supplierMine/BasicInfo'
-import SupplierCommodity from './supplierCommodity/commodity/List'
 import SupplierPrice from './supplierCommodity/price/List'
 import SupplierSource from './supplierCommodity/source/List'
 import SupplierOrder from './supplierFinance/order/List'
@@ -43,6 +44,10 @@ export default new Router({
       {
           path: '/operator',   // 用户 - 运营人员
           component: Operator
+      },
+      {
+          path: '/product',   // 商品 - 商品
+          component: Product
       },
 
       {
@@ -113,10 +118,6 @@ export default new Router({
       {
           path: '/supplier-basic',    // 供应商 - 基本资料
           component: SupplierBasic
-      },
-      {
-          path: '/supplier-commodity',   // 供应商 - 商品管理
-          component: SupplierCommodity
       },
       {
           path: '/supplier-price',    // 供应商 - 价格管理

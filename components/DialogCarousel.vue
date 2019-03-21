@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="show" width="900px" :append-to-body="true" class="carousel-dialog" :close-on-click-modal="false">
-    <el-carousel ref="carousel" :autoplay="false" arrow="always" height="500px">
+    <el-carousel ref="carousel" :autoplay="false" arrow="always" height="500px" @change="change">
       <el-carousel-item v-for="(item,index) in images" :key="index" :label="item.label">
         <img :src="item.src"/>
       </el-carousel-item>
@@ -28,7 +28,9 @@ export default {
         }
     },
     methods: {
-
+        change(index){
+            this.$emit('update:activeIndex', index);
+        }
     }
 }
 </script>

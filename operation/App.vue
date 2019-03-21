@@ -66,15 +66,11 @@
                         subs: [
                             {
                                 right: 'product',
-                                label: '架上商品'
-                            },
-                            {
-                                right: 'pastProduct',
-                                label: '已下架商品'
+                                label: '商品'
                             },
                             {
                                 right: 'comment',
-                                label: '评价管理'
+                                label: '评价'
                             }
                         ]
                     },
@@ -83,11 +79,7 @@
                         subs: [
                             {
                                 right: 'order',
-                                label: '预约订单'
-                            },
-                            {
-                                right: 'pastOrder',
-                                label: '过往订单'
+                                label: '订单'
                             }
                         ]
                     },
