@@ -14,6 +14,7 @@
                         <el-button type="text" @click="enable(scope.row)" v-if="scope.row.status == '禁止发布'">允许发布</el-button>
                         <el-button type="text" @click="disable(scope.row)" v-if="scope.row.status == '正常'">禁止发布
                         </el-button>
+                        <el-button type="text" @click="deduct(scope.row)">降分</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -68,6 +69,16 @@
                     }
                 }).catch(() => {
                     this.loading = false;
+                });
+            },
+            deduct(){
+                this.$confirm('确认降分该用户?', '确认', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.operateAjax("/admin/customer/" + row.id);
+            }).catch(() => {
                 });
             },
             enable(row) {
