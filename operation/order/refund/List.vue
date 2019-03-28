@@ -1,7 +1,7 @@
 <template>
     <div class="tip-off-list" v-loading="loading">
         <div class="list-top">
-            <span class="page-title">商户举报</span>
+            <span class="page-title">退款申请</span>
         </div>
         <div class="list-table">
             <el-table :data="table.data">
@@ -10,8 +10,11 @@
                 <el-table-column prop="customerName" label="客户"></el-table-column>
                 <el-table-column prop="merchantId" label="商户ID"></el-table-column>
                 <el-table-column prop="merchantName" label="商户"></el-table-column>
-                <el-table-column prop="type" label="举报类型"></el-table-column>
-                <el-table-column label="举报详情">
+                <el-table-column prop="merchantId" label="服务ID"></el-table-column>
+                <el-table-column prop="merchantName" label="服务"></el-table-column>
+                <el-table-column prop="merchantId" label="订单ID"></el-table-column>
+                <el-table-column prop="type" label="退款类型"></el-table-column>
+                <el-table-column label="申请详情">
                     <template slot-scope="scope">
                         <el-popover placement="left" trigger="hover" :content="scope.row.detail">
                             <el-button slot="reference" type="text" v-if="scope.row.detail">查看</el-button>
@@ -42,7 +45,8 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" @click="reply(scope.row)">回复</el-button>
-                        <el-button type="text" @click="conduct(scope.row)">处理</el-button>
+                        <el-button type="text" @click="accept(scope.row)" v-if="scope.row.status == '待受理'">受理</el-button>
+                        <el-button type="text" @click="conduct(scope.row)" v-if="scope.row.status == '受理中'">处理</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,15 +68,15 @@
                 <el-button type="primary" @click="replyConfirm">确 认</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="处理记录" :visible.sync="conductDialog.visible" width="500px" :close-on-click-modal="false">
+        <el-dialog title="处理" :visible.sync="conductDialog.visible" width="500px" :close-on-click-modal="false">
             <el-form :model="conductDialog.model" ref="conductForm" :rules="rules" label-width="0">
                 <el-form-item label="" prop="status">
-                    <el-radio-group v-model="conductDialog.model.status">
-                        <el-radio :label="item.value" v-for="(item, index) in filter.statuses" :key="index">{{item.label}}</el-radio>
+                    <el-radio-group v-model="conductDialog.model.handle">
+                        <el-radio :label="item.value" v-for="(item, index) in conductDialog.handles" :key="index">{{item.label}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="" prop="detail">
-                    <el-input type="textarea" :rows="4" placeholder="请输入处理内容"
+                    <el-input type="textarea" :rows="4" placeholder="请输入处理理由"
                               v-model="conductDialog.model.detail" maxlength="200"></el-input>
                 </el-form-item>
             </el-form>
@@ -94,15 +98,19 @@
                     statuses: [
                         {
                             value: 0,
-                            label: '待处理'
+                            label: '待受理'
                         },
                         {
                             value: 1,
-                            label: '处理中'
+                            label: '受理中'
                         },
                         {
                             value: 2,
-                            label: '办结'
+                            label: '已退款'
+                        },
+                        {
+                            value: 3,
+                            label: '已拒绝'
                         }
                     ]
                 },
@@ -122,9 +130,19 @@
                 },
                 conductDialog: {
                     visible: false,
+                    handles: [
+                        {
+                            value: 1,
+                            label: '退款'
+                        },
+                        {
+                            value: 2,
+                            label: '拒绝'
+                        }
+                    ],
                     model: {
                         id: '',
-                        status: '',
+                        handle: '',
                         detail: ''
                     }
                 },
@@ -165,6 +183,9 @@
                 }).catch(() => {
                     this.loading = false;
                 });
+            },
+            accept(row){
+
             },
             /*******  回复 对话框 *******/
             reply(row) {

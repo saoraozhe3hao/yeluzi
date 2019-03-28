@@ -13,6 +13,7 @@ import TipOff from './product/tipOff/List'
 
 import Order from './order/order/List'
 import Comment from './order/comment/List'
+import Refund from './order/refund/List'
 
 export default new Router({
   routes: [
@@ -59,5 +60,9 @@ export default new Router({
           path: '/order',   // 订单 - 订单
           component: Order
       },
+      {
+          path: '/refund',   // 订单 - 退款
+          component: Refund
+      }
   ]
 })

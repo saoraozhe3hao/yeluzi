@@ -18,7 +18,7 @@ function stub() {
                 role: "角色" + Random.integer(0),
                 rights: ['order', 'order.all', 'pastOrder.all', 'product', 'product.all',
                     'pastProduct', 'pastProduct.all', 'comment', 'comment.all', 'operator', 'operator.all',
-                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','tipOff', 'tipOff.all']
+                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','refund', 'refund.all','tipOff', 'tipOff.all']
             }
         }
     });
@@ -85,17 +85,17 @@ function stub() {
                     {
                         operator: "运营人" + Random.integer(0),
                         time: Random.date(),
-                        status: Random.pick(['待处理', '处理中', '办结']),
+                        status: Random.pick(['待受理', '受理中', '办结']),
                         content: "内容" + Random.integer(0)
                     },
                     {
                         operator: "运营人" + Random.integer(0),
                         time: Random.date(),
-                        status: Random.pick(['待处理', '处理中', '办结']),
+                        status: Random.pick(['待受理', '受理中', '办结']),
                         content: "内容" + Random.integer(0)
                     }
                 ],
-                status: Random.pick(['待处理', '处理中', '办结']),
+                status: Random.pick(['待受理', '受理中', '办结']),
                 phone: Random.integer(10000000000, 19999999999)
             });
         }

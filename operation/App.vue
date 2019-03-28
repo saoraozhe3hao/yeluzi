@@ -84,6 +84,10 @@
                             {
                                 right: 'comment',
                                 label: '评价'
+                            },
+                            {
+                                right: 'refund',
+                                label: '退款申请'
                             }
                         ]
                     },
