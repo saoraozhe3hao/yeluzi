@@ -18,7 +18,8 @@ function stub() {
                 role: "角色" + Random.integer(0),
                 rights: ['order', 'order.all', 'pastOrder.all', 'product', 'product.all',
                     'pastProduct', 'pastProduct.all', 'comment', 'comment.all', 'operator', 'operator.all',
-                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','refund', 'refund.all','tipOff', 'tipOff.all']
+                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','refund', 'refund.all',
+                    'tipOff', 'tipOff.all','withdraw', 'withdraw.all']
             }
         }
     });
@@ -97,6 +98,28 @@ function stub() {
                 ],
                 status: Random.pick(['待受理', '受理中', '办结']),
                 phone: Random.integer(10000000000, 19999999999)
+            });
+        }
+        return {
+            code: "0",
+            data: data,
+            recordsTotal: Random.integer(15, 550)
+        }
+    });
+    // 提现申请 分页列表
+    Mock.mock(/\/admin\/withdraw/, function () {
+        let data = [];
+        for (let i = 0; i < 10; i++) {
+            data.push({
+                id: Random.integer(0),
+                merchantId: Random.integer(0),
+                merchantName: "商户" + Random.integer(0),
+                name: "姓名" +  Random.integer(0),
+                cardNumber: Random.integer(0),
+                bank: "开户行" +  Random.integer(0),
+                amount: Random.integer(0,1232),
+                operator: "操作人" +  Random.integer(0),
+                status: Random.pick(['待支付', '支付中', '已支付'])
             });
         }
         return {

@@ -8,8 +8,10 @@ import Customer from './user/customer/List'
 import Message from './user/message/List'
 
 import Product from './product/product/List'
+
 import Merchant from './product/merchant/List'
 import TipOff from './product/tipOff/List'
+import Withdraw from './product/withdraw/List'
 
 import Order from './order/order/List'
 import Comment from './order/comment/List'
@@ -43,13 +45,18 @@ export default new Router({
           path: '/product',   // 商品 - 商品
           component: Product
       },
+
       {
-          path: '/merchant',      // 商品 - 商户
+          path: '/merchant',      // 商户 - 商户
           component: Merchant
       },
       {
-          path: '/tipOff',      // 商品 - 商户举报
+          path: '/tipOff',      // 商户 - 商户举报
           component: TipOff
+      },
+      {
+          path: '/withdraw',      // 商户 - 提现申请
+          component: Withdraw
       },
 
       {

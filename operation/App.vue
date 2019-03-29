@@ -63,7 +63,12 @@
                             {
                                 right: 'product',
                                 label: '商品'
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        label: '商户管理',
+                        subs: [
                             {
                                 right: 'merchant',
                                 label: '商户'
@@ -71,6 +76,10 @@
                             {
                                 right: 'tipOff',
                                 label: '商户举报'
+                            },
+                            {
+                                right: 'withdraw',
+                                label: '提现申请'
                             }
                         ]
                     },
