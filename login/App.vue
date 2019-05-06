@@ -2,7 +2,7 @@
     <div class="login">
         <el-card class="login-box">
             <img src="../assets/images/logo@3x.png" class="logo"/>
-            <div class="sys-name">趣乡野运营系统</div>
+            <div class="sys-name">野趣小圈运营系统</div>
             <el-form ref="form" :model="form" :rules="validate" class="form">
                 <el-form-item label="" prop="j_username">
                     <el-input v-model="form.j_username" maxlength="11" placeholder="手机号" autocomplete="on"></el-input>
@@ -57,9 +57,9 @@
                     method: "post",
                     url: this.$basePath + "/admin/login",
                     data: this.$qs.stringify({
-                        j_username: this.form.j_username,
-                        j_password: Md5(this.form.j_password),
-                        j_captcha: this.form.j_captcha
+                        username: this.form.j_username,
+                        password: this.form.j_password,
+                        // j_captcha: this.form.j_captcha
                     })
                 }).then((response) => {
                     response = response.data;
@@ -134,7 +134,7 @@
         }
         .captcha-img {
             cursor: pointer;
-            height: 46px;
+            width: 124px;
             vertical-align: middle;
         }
         .login-btn {

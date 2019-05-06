@@ -142,7 +142,7 @@ module.exports = {
         inline: true,
         port: 8090,
         headers: {
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "http://127.0.0.1:8081",
             "Access-Control-Allow-Credentials": true,
             "Access-Control-Allow-Methods": "POST, GET, PUT, OPTIONS",
             "Access-Control-Allow-Headers": "X-PINGOTHER, Content-Type"
