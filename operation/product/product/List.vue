@@ -160,13 +160,11 @@
             fetchList() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
+                    method: "get",
                     url: this.$basePath + "/admin/product",
                     params: {
                         length: 10,
-                        start: (this.page.currentPage - 1) * 10
-                    },
-                    data: {
+                        start: (this.page.currentPage - 1) * 10,
                         searchKey: this.filter.searchKey
                     }
                 }).then((response) => {

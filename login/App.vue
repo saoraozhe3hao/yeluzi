@@ -59,7 +59,7 @@
                     data: this.$qs.stringify({
                         username: this.form.j_username,
                         password: this.form.j_password,
-                        // j_captcha: this.form.j_captcha
+                        captcha: this.form.j_captcha
                     })
                 }).then((response) => {
                     response = response.data;

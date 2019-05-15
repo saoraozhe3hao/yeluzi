@@ -1,5 +1,5 @@
 <template>
-    <div class="main" v-show="$store.state.myDetail.rights">
+    <div class="main" v-show="$store.state.myDetail.authorities">
         <el-row class="top">
             <el-col :span="6" class="name">
                 <img src="../assets/images/logo@2x.png" class="logo"/>
@@ -15,15 +15,15 @@
             </el-col>
             <el-col :span="6" class="user-info">
                 欢迎你：
-                <el-button type="text" @click="goToMine">{{myDetail.name}}</el-button>
+                <el-button type="text" @click="goToMine">{{myDetail.username}}</el-button>
                 <el-button type="text" @click="logOut">退出</el-button>
             </el-col>
         </el-row>
         <el-row class="level_two_menu">
             <el-col :span="4">
                 <el-menu :default-active="activeIndex" router>
-                    <el-menu-item v-for="item in subs" :index="'/'+item.right" :key="item.right"
-                                  v-if="rights.includes(item.right)">
+                    <el-menu-item v-for="item in subs" :index="'/'+item.authority" :key="item.authority"
+                                  v-if="visibleMenus.includes(item.authority)">
                         {{item.label}}
                     </el-menu-item>
                 </el-menu>
@@ -44,15 +44,15 @@
                         label: '用户管理',
                         subs: [
                             {
-                                right: 'operator',
+                                authority: 'operator',
                                 label: '运营人员'
                             },
                             {
-                                right: 'customer',
+                                authority: 'customer',
                                 label: '用户'
                             },
                             {
-                                right: 'message',
+                                authority: 'message',
                                 label: '用户留言'
                             }
                         ]
@@ -61,7 +61,7 @@
                         label: '商品管理',
                         subs: [
                             {
-                                right: 'product',
+                                authority: 'product',
                                 label: '商品'
                             }
                         ]
@@ -70,15 +70,15 @@
                         label: '商户管理',
                         subs: [
                             {
-                                right: 'merchant',
+                                authority: 'merchant',
                                 label: '商户'
                             },
                             {
-                                right: 'tipOff',
+                                authority: 'tipOff',
                                 label: '商户举报'
                             },
                             {
-                                right: 'withdraw',
+                                authority: 'withdraw',
                                 label: '提现申请'
                             }
                         ]
@@ -87,15 +87,15 @@
                         label: '订单管理',
                         subs: [
                             {
-                                right: 'order',
+                                authority: 'order',
                                 label: '订单'
                             },
                             {
-                                right: 'comment',
+                                authority: 'comment',
                                 label: '评价'
                             },
                             {
-                                right: 'refund',
+                                authority: 'refund',
                                 label: '退款申请'
                             }
                         ]
@@ -105,11 +105,11 @@
                         hidden: true,
                         subs: [
                             {
-                                right: 'basic',
+                                authority: 'basic',
                                 label: '基本信息'
                             },
                             {
-                                right: 'resetPwd',
+                                authority: 'resetPwd',
                                 label: '修改密码'
                             }
                         ]
@@ -123,12 +123,17 @@
             myDetail: function () {
                 return this.$store.state.myDetail;
             },
-            rights: function () {
-                return ['basic', 'resetPwd'].concat(this.$store.state.rights);
+            authorities: function () {
+                return ['basic', 'resetPwd'].concat(this.$store.state.authorities);
+            },
+            visibleMenus: function(){
+                return this.authorities.map((item)=>{
+                    return item.split('.')[0];
+                });
             },
             subs: function () {
-                let right = this.topActiveIndex.split('/')[1];
-                let topMenu = this.menus[right] || {};
+                let authority = this.topActiveIndex.split('/')[1];
+                let topMenu = this.menus[authority] || {};
                 return topMenu.subs || [];
             }
         },
@@ -156,7 +161,7 @@
             findTopBySub(path) {
                 return this.menus.find((top) => {
                     return top.subs.find((sub) => {
-                        return path == '/' + sub.right;
+                        return path == '/' + sub.authority;
                     });
                 });
             },
@@ -166,24 +171,20 @@
             logOut() {
                 this.$axios({
                     method: "post",
-                    url: this.$basePath + "/admin/logout",
+                    url: this.$basePath + "/admin/signOut",
                 }).then((response) => {
-                    response = response.data;
-                    if (response.code == 0) {
-                        window.location.href = 'login.html';
-                    }
                 }).catch((error) => {
                 });
             },
             fetchDetail() {
                 this.$axios({
                     method: "get",
-                    url: this.$basePath + "/admin/user/detail",
+                    url: this.$basePath + "/admin/me",
                 }).then((response) => {
                     response = response.data;
                     if (response.code == 0) {
                         this.$store.state.myDetail = response.data;
-                        this.$store.state.rights = response.data.rights;
+                        this.$store.state.authorities = response.data.authorities;
                         this.$store.commit("change");  // 调用commit才能发出改变通知
                         this.activeMenu();
                     }
@@ -191,7 +192,7 @@
                 });
             }
         },
-        mounted: function () {
+        created(){
             // 请求拦截器
             this.$axios.interceptors.request.use(function (config) {
                 config.withCredentials = true;  // 跨域请求允许带上cookie
@@ -218,6 +219,8 @@
                 }
                 return Promise.reject(error);
             });
+        },
+        mounted () {
             this.fetchDetail();
         }
     }

@@ -2,7 +2,7 @@ import Mock from 'mockjs'
 var Random = Mock.Random;
 
 var commonId = Random.integer(0);
-function stub(){
+function mock(){
     // 登录
     Mock.mock(/\/admin\/login/,function(){
         return {
@@ -19,5 +19,8 @@ function stub(){
         }
     });
 }
-
-export default stub;
+// 本地才加载桩数据
+if(location.hostname == 'localhost'){
+    mock();
+}
+export default mock;

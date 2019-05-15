@@ -52,7 +52,7 @@ admin/main.js 引用admin/目录下所有的 样式、脚本、模板
 
 #### 快速上手
 1、新增HTML
-在根目录下新建目录，模仿admin/ ，需要有App.vue，main.js，router.js，stub.js
+在根目录下新建目录，模仿admin/ ，需要有App.vue，main.js，router.js，mock.js
 模仿admin/ 在webpack.config.js的配置
 2、在admin/ 下新增页面
 根据页面 和 菜单的关系，在相应目录下新建.vue文件，.vue是一个单文件组件，它定义了这个组件的模板<template>、脚本<script>、样式<style>

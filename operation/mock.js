@@ -3,23 +3,20 @@ import Mock from 'mockjs'
 let Random = Mock.Random;
 
 let commonId = Random.integer(0);
-let goodsId = Random.integer(100000000, 200000000);
 
-function stub() {
+function mock() {
     // 我的 详情 接口
-    Mock.mock(/\/admin\/user\/detail/, function () {
+    Mock.mock(/\/admin\/me/, function () {
         return {
             code: "0",
             data: {
                 id: Random.integer(0),
-                name: Random.pick(["张三", "李四", "王五", "赵六"]),
+                username: Random.pick(["张三", "李四", "王五", "赵六"]),
                 idNumber: Random.integer(10000000000, 19999999999),
                 mobile: Random.integer(10000000000, 19999999999),
                 role: "角色" + Random.integer(0),
-                rights: ['order', 'order.all', 'pastOrder.all', 'product', 'product.all',
-                    'pastProduct', 'pastProduct.all', 'comment', 'comment.all', 'operator', 'operator.all',
-                    'merchant', 'merchant.all', 'customer', 'customer.all', 'message','refund', 'refund.all',
-                    'tipOff', 'tipOff.all','withdraw', 'withdraw.all']
+                authorities: ['order.all', 'product.all', 'pastProduct.all', 'comment.all', 'operator.all', 'merchant.all',
+                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all'] // get(list,detail),alter(put,delete,post),all(get,alter)
             }
         }
     });
@@ -114,11 +111,11 @@ function stub() {
                 id: Random.integer(0),
                 merchantId: Random.integer(0),
                 merchantName: "商户" + Random.integer(0),
-                name: "姓名" +  Random.integer(0),
+                name: "姓名" + Random.integer(0),
                 cardNumber: Random.integer(0),
-                bank: "开户行" +  Random.integer(0),
-                amount: Random.integer(0,1232),
-                operator: "操作人" +  Random.integer(0),
+                bank: "开户行" + Random.integer(0),
+                amount: Random.integer(0, 1232),
+                operator: "操作人" + Random.integer(0),
                 status: Random.pick(['待支付', '支付中', '已支付'])
             });
         }
@@ -182,26 +179,26 @@ function stub() {
                 timeRange: Random.datetime(),
                 address: "地点" + Random.integer(0),
                 labels: ["打野", "民俗", "探秘", "赶海"],
-                limit: Random.integer(0,100),
+                limit: Random.integer(0, 100),
                 morningActivity: "早上" + Random.integer(0),
                 lunch: "午饭" + Random.integer(0),
                 afternoonActivity: "下午" + Random.integer(0),
                 dinner: "午饭" + Random.integer(0),
                 eveningActivity: "晚上" + Random.integer(0),
-                stayOver: Random.integer(0,2),
-                roomNum: Random.integer(0,100),
-                roomPrice: Random.integer(0,100),
-                bedNum: Random.integer(0,100),
-                bedPrice: Random.integer(0,100),
+                stayOver: Random.integer(0, 2),
+                roomNum: Random.integer(0, 100),
+                roomPrice: Random.integer(0, 100),
+                bedNum: Random.integer(0, 100),
+                bedPrice: Random.integer(0, 100),
                 hotelDetail: "酒店说明" + Random.integer(0),
-                singlePrice:  Random.integer(0,100),
-                doublePrice:  Random.integer(0,100),
-                treblePrice:  Random.integer(0,100),
-                sextuplePrice:  Random.integer(0,100),
-                decuplePrice:  Random.integer(0,100),
-                status: Random.pick(['待审核','审核不通过','零预约','预约中','已下架']),
-                activityPhotos: [Random.image(),Random.image(),Random.image()],
-                stayOverPhotos: [Random.image(),Random.image(),Random.image()]
+                singlePrice: Random.integer(0, 100),
+                doublePrice: Random.integer(0, 100),
+                treblePrice: Random.integer(0, 100),
+                sextuplePrice: Random.integer(0, 100),
+                decuplePrice: Random.integer(0, 100),
+                status: Random.pick(['待审核', '审核不通过', '零预约', '预约中', '已下架']),
+                activityPhotos: [Random.image(), Random.image(), Random.image()],
+                stayOverPhotos: [Random.image(), Random.image(), Random.image()]
             });
         }
         return {
@@ -216,7 +213,7 @@ function stub() {
         for (let i = 0; i < 10; i++) {
             data.push({
                 id: Random.integer(100000000, 200000000),
-                score: Random.integer(0,100),
+                score: Random.integer(0, 100),
                 comment: "评论" + Random.integer(0),
                 response: "回应" + Random.integer(0),
                 customerId: Random.integer(0),
@@ -252,11 +249,11 @@ function stub() {
                 payTime: Random.datetime(),
                 orderTime: Random.datetime(),
                 useTime: Random.datetime(),
-                total: Random.integer(0,1000),
-                status: Random.pick(['待使用','已使用','已过期','已退款']),
-                customerNum: Random.integer(0,100),
-                roomNum: Random.integer(0,10),
-                bedNum: Random.integer(0,10),
+                total: Random.integer(0, 1000),
+                status: Random.pick(['待使用', '已使用', '已过期', '已退款']),
+                customerNum: Random.integer(0, 100),
+                roomNum: Random.integer(0, 10),
+                bedNum: Random.integer(0, 10),
                 refunder: "运营员" + Random.integer(0),
             });
         }
@@ -306,4 +303,9 @@ function stub() {
     });
 }
 
-export default stub;
+// 本地才加载桩数据
+if (location.hostname == 'localhost') {
+    mock();
+}
+
+export default mock;
