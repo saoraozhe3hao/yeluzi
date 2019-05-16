@@ -6,7 +6,7 @@ let commonId = Random.integer(0);
 
 function mock() {
     // 我的 详情 接口
-    Mock.mock(/\/admin\/me/, function () {
+    Mock.mock(/\/me/, function () {
         return {
             code: "0",
             data: {
@@ -16,7 +16,7 @@ function mock() {
                 mobile: Random.integer(10000000000, 19999999999),
                 role: "角色" + Random.integer(0),
                 authorities: ['order.all', 'product.all', 'pastProduct.all', 'comment.all', 'operator.all', 'merchant.all',
-                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all'] // get(list,detail),alter(put,delete,post),all(get,alter)
+                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all'] // get,put,delete,post,all
             }
         }
     });
@@ -295,7 +295,7 @@ function mock() {
     });
 
     // 其他
-    Mock.mock(/\/admin/, function () {
+    Mock.mock(/./, function () {
         return {
             code: "0",
             data: null

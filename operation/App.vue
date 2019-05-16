@@ -171,7 +171,7 @@
             logOut() {
                 this.$axios({
                     method: "post",
-                    url: this.$basePath + "/admin/signOut",
+                    url: this.$basePath + "/signOut",
                 }).then((response) => {
                 }).catch((error) => {
                 });
@@ -179,7 +179,7 @@
             fetchDetail() {
                 this.$axios({
                     method: "get",
-                    url: this.$basePath + "/admin/me",
+                    url: this.$basePath + "/me",
                 }).then((response) => {
                     response = response.data;
                     if (response.code == 0) {

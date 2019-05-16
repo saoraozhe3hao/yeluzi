@@ -12,7 +12,7 @@
                 </el-form-item>
                 <el-form-item label="" prop="j_captcha">
                     <el-input type="captcha" v-model="form.j_captcha" maxlength="4" placeholder="验证码" class="captcha-input"></el-input>
-                    <img :src="$basePath + '/admin/captcha?' + form.captchaNum" class="captcha-img" @click="fetchCaptcha"/>
+                    <img :src="$basePath + '/captcha?' + form.captchaNum" class="captcha-img" @click="fetchCaptcha"/>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="validateForm" class="login-btn">登录</el-button>
@@ -55,7 +55,7 @@
             submit() {
                 this.$axios({
                     method: "post",
-                    url: this.$basePath + "/admin/login",
+                    url: this.$basePath + "/login",
                     data: this.$qs.stringify({
                         username: this.form.j_username,
                         password: this.form.j_password,
