@@ -28,33 +28,3 @@ npm下载的依赖模块：node_modules，这个目录在.gitignore中配置成�
 
 项目公共资源：assets/
 项目公共组件：components/
-给移动端引用的页面：h5/
-健康检查页面：healthCheck/
-
-客服登录相关页面：serviceLogin/
-供应商注册登录相关页面：supplierLogin/
-登录后的管理页面：admin/  , admin/ 下 service前缀的目录是客服相关，supplier前缀的目录是供应商相关
-
-#### 基本原理
-1、页面切换
-页面切换有两种方式，一是，从一个html跳转到另一个html,两个html页面不会共享任何变量
-二是，改变URL #后的值，这个值称为哈希（锚、路由），这种切换方式称为局部刷新，由路由组件 vue-router 实现
-admin/ 整个目录 会打包成 一个html，serviceLogin/ 和 supplierLogin/ 同理，打包规则在webpack.config中配置
-admin/ 下的不同页面通过 路由 切换，路由规则配置在 admin/router.js
-2、引用逻辑
-任何web页面的入口都是HTML文档，本项目的HTML文档的模板是assets/index.html
-assets/index.html经过webpack打包后，会生成admin.html（登录后的管理页面）,serviceLogin.html（客服登录）,supplierLogin.html（供应商注册和登录）
-admin.html 会引用 admin/main.js，即 admin/main.js 是 admin页面的入口js
-admin/main.js 引用admin/目录下所有的 样式、脚本、模板
-3、假数据
-假数据写在stub.js中，main.js中判断了只在通过localhost访问时，才使用假数据
-假数据功能由 mockjs 实现
-
-#### 快速上手
-1、新增HTML
-在根目录下新建目录，模仿admin/ ，需要有App.vue，main.js，router.js，mock.js
-模仿admin/ 在webpack.config.js的配置
-2、在admin/ 下新增页面
-根据页面 和 菜单的关系，在相应目录下新建.vue文件，.vue是一个单文件组件，它定义了这个组件的模板<template>、脚本<script>、样式<style>
-在router.js 中配置路由，即通过什么哈希值能访问到这个页面
-在stub.js 中配置需要的假数据

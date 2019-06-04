@@ -6,7 +6,7 @@ let path = require('path'),
     {VueLoaderPlugin} = require('vue-loader'),
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
-    CleanWebpackPlugin = require('clean-webpack-plugin');
+    { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // 获取命令参数，命令写在package.json中
 let args = process.argv;
@@ -134,7 +134,9 @@ module.exports = {
             chunks: ['login', 'vendors']
         }),
         new VueLoaderPlugin(),
-        new CleanWebpackPlugin(['dist'])  // 清空dist
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: ['dist'],
+            })  // 清空dist
     ],
     // 配置 webpack-dev-server
     devServer: {
