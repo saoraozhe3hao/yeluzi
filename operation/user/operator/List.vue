@@ -130,12 +130,12 @@
                     operations: [
                         {
                             label: "启用",
-                            url: "/admin/custom/service/manage/users/enabled",
+                            url: "/admin/operator/enable",
                             method: 'put'
                         },
                         {
                             label: "停用",
-                            url: "/admin/custom/service/manage/users/disable",
+                            url: "/admin/operator/disable",
                             method: 'put'
                         }
                     ],
@@ -195,13 +195,13 @@
             },
             selectionChange(selection) {
                 this.batch.targets = selection.map((item) => {
-                    return item.userId;
+                    return item.id;
                 });
             },
             fetchList() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
+                    method: "get",
                     url: this.$basePath + "/admin/operator",
                     params: {
                         pageSize: 10,
@@ -322,7 +322,7 @@
             },
             /*******  重置密码 对话框  *******/
             resetPwd(row) {
-                this.form.id = row.userId;
+                this.form.id = row.id;
                 this.form.password = '';
                 this.form.repeatPwd = '';
                 this.resetDialog.visible = true;
