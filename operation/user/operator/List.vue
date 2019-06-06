@@ -13,14 +13,18 @@
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="idNumber" label="身份证号"></el-table-column>
-                <el-table-column prop="mobile" label="手机号(账号)"></el-table-column>
+                <el-table-column prop="username" label="手机号(账号)"></el-table-column>
                 <el-table-column label="角色">
                     <template slot-scope="scope">
-                        {{getRole(scope.row.role)}}
+                        {{getRole(scope.row.roles)}}
                     </template>
                 </el-table-column>
                 <el-table-column prop="creator" label="创建人"></el-table-column>
-                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        {{statusMap[scope.row.status]}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
                         <el-button type="text" @click="resetPwd(scope.row)">重置密码</el-button>
@@ -118,6 +122,10 @@
                     data: [],
                     selection: []
                 },
+                statusMap: {
+                    normal: '正常',
+                    disabled: '停用'
+                },
                 batch: {
                     operations: [
                         {
@@ -179,11 +187,11 @@
             selectable(row) {
                 return row.role != "系统管理员";
             },
-            getRole(roleId){
-                let role = this.roles.find((role)=>{
-                    return role.id == roleId;
+            getRole(roles){
+                let roleNames = roles.map((item)=>{
+                    return item.name;
                 });
-                return role && role.name;
+                return roleNames.join(',');
             },
             selectionChange(selection) {
                 this.batch.targets = selection.map((item) => {
@@ -196,8 +204,8 @@
                     method: "post",
                     url: this.$basePath + "/admin/operator",
                     params: {
-                        length: 10,
-                        start: (this.page.currentPage - 1) * 10
+                        pageSize: 10,
+                        pageNum: this.page.currentPage
                     },
                     data: {
                         queryString: this.filter.queryString
@@ -206,8 +214,8 @@
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.table.data = response.data.resultList || [];
-                        this.page.totalCount = response.data.totalCount;
+                        this.table.data = response.data.list || [];
+                        this.page.totalCount = response.data.total;
                     }
                 }).catch(() => {
                     this.loading = false;

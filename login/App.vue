@@ -2,7 +2,7 @@
     <div class="login">
         <el-card class="login-box">
             <img src="../assets/images/logo@3x.png" class="logo"/>
-            <div class="sys-name">野趣小圈运营系统</div>
+            <div class="sys-name">JAVA后台系统</div>
             <el-form ref="form" :model="form" :rules="validate" class="form">
                 <el-form-item label="" prop="j_username">
                     <el-input v-model="form.j_username" maxlength="11" placeholder="手机号" autocomplete="on"></el-input>

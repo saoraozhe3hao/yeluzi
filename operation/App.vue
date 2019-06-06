@@ -3,7 +3,7 @@
         <el-row class="top">
             <el-col :span="6" class="name">
                 <img src="../assets/images/logo@2x.png" class="logo"/>
-                趣乡野运营系统
+                JAVA管理后台
             </el-col>
             <el-col :span="12">
                 <el-menu :default-active="topActiveIndex" mode="horizontal" router

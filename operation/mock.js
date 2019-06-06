@@ -11,12 +11,12 @@ function mock() {
             code: "0",
             data: {
                 id: Random.integer(0),
-                username: Random.pick(["张三", "李四", "王五", "赵六"]),
+                name: Random.pick(["张三", "李四", "王五", "赵六"]),
                 idNumber: Random.integer(10000000000, 19999999999),
-                mobile: Random.integer(10000000000, 19999999999),
-                role: "角色" + Random.integer(0),
+                username: Random.integer(10000000000, 19999999999),
+                roles: [{id: "1", name: "admin"},{id: "2", name: "auditor"}],
                 authorities: ['order.all', 'product.all', 'pastProduct.all', 'comment.all', 'operator.all', 'merchant.all',
-                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all'] // get,put,delete,post,all
+                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all','message.all'] // get,put,delete,post,all
             }
         }
     });
@@ -153,8 +153,8 @@ function mock() {
                 id: Random.integer(0),
                 name: "姓名" + Random.integer(0),
                 idNumber: Random.integer(10000000000, 19999999999),
-                role: Random.pick([100001, 100002, 100003]),
-                mobile: Random.integer(10000000000, 19999999999),
+                roles: [{id: "1", name: "系统管理员"},{id: "2", name: "审计员"}],
+                username: Random.integer(10000000000, 19999999999),
                 creator: "创建人" + Random.integer(0),
                 status: Random.pick(["停用", "正常"])
             });
@@ -162,8 +162,8 @@ function mock() {
         return {
             code: "0",
             data: {
-                resultList: data,
-                totalCount: Random.integer(15, 550)
+                list: data,
+                total: Random.integer(15, 550)
             }
         }
     });
