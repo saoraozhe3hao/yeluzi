@@ -9,7 +9,7 @@
         </div>
         <div class="list-table">
             <el-table :data="table.data" @selection-change="selectionChange">
-                <el-table-column type="selection" width="50" :selectable="selectable"></el-table-column>
+                <el-table-column type="selection" width="50"></el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="idNumber" label="身份证号"></el-table-column>
@@ -72,11 +72,11 @@
         <el-dialog title="编辑人员" :visible.sync="editDialog.visible" width="500px" :close-on-click-modal="false">
             <!-- 用ref.prop 去 校验 model.prop -->
             <el-form :model="form" ref="editForm" :rules="rules" label-width="100px">
-                <el-form-item label="手机号：" prop="mobile">
-                    <el-input v-model="form.mobile" maxlength="11" placeholder="请输入"></el-input>
+                <el-form-item label="手机号：" prop="username">
+                    <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
                 <el-form-item label="角色：" prop="role">
-                    <el-select v-model="form.role" filterable placeholder="请选择">
+                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple >
                         <el-option v-for="item in roles" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -159,18 +159,18 @@
                     id: '',
                     name: '',
                     idNumber: '',
-                    mobile: '',
-                    role: '',
+                    username: '',
+                    roles: [],
                     password: '',
                     repeatPwd: ''
                 },
                 rules: {
                     name: this.$validation.fullName,
                     idNumber: this.$validation.idNumber,
-                    mobile: this.$validation.mobile,
+                    username: this.$validation.mobile,
                     password: this.$validation.password,
                     repeatPwd: this.$validation.repeatPwd.call(this, "form.password"),
-                    role: [
+                    roles: [
                         {required: true, message: '请选择角色'},
                     ]
                 }
@@ -183,9 +183,6 @@
             search() {
                 this.page.currentPage = 1;
                 this.fetchList();
-            },
-            selectable(row) {
-                return row.role != "系统管理员";
             },
             getRole(roles){
                 let roleNames = roles.map((item)=>{
@@ -224,8 +221,8 @@
             fetchRoles() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
-                    url: this.$basePath + "/admin/role"
+                    method: "get",
+                    url: this.$basePath + "/admin/operator/role"
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
@@ -283,9 +280,12 @@
             /*******  编辑 对话框  *******/
             edit(row) {
                 this.form.id = row.id;
-                this.form.mobile = row.mobile;
-                this.form.role = row.role;
+                this.form.username = row.username;
+                this.form.roles = row.roles.map((item)=>{
+                    return item.id;
+                });
                 this.editDialog.visible = true;
+                this.fetchRoles();
             },
             editConfirm() {
                 this.$refs.editForm.validate((valid) => {
@@ -300,10 +300,10 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/custom/service/manage/user/" + this.form.id,
+                    url: this.$basePath + "/admin/operator/" + this.form.id,
                     data: {
-                        mobile: this.form.mobile,
-                        role: this.form.role
+                        username: this.form.username,
+                        roleIds: this.form.roles
                     }
                 }).then((response) => {
                     this.loading = false;
@@ -365,7 +365,6 @@
         },
         mounted: function () {
             this.fetchList();
-            this.fetchRoles();
         }
     }
 </script>
