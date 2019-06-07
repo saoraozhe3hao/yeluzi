@@ -58,7 +58,7 @@
                     url: this.$basePath + "/login",
                     data: this.$qs.stringify({
                         username: this.form.j_username,
-                        password: this.form.j_password,
+                        password: Md5(this.form.j_password),
                         captcha: this.form.j_captcha
                     })
                 }).then((response) => {

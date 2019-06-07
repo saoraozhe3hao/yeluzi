@@ -156,7 +156,7 @@ function mock() {
                 roles: [{id: "1", name: "系统管理员"},{id: "2", name: "审计员"}],
                 username: Random.integer(10000000000, 19999999999),
                 creator: "创建人" + Random.integer(0),
-                status: Random.pick(["停用", "正常"])
+                status: Random.pick(["disabled", "normal"])
             });
         }
         return {

@@ -343,7 +343,7 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/custom/service/manage/user/" + this.form.id + "/password",
+                    url: this.$basePath + "/admin/operator/" + this.form.id + "/password",
                     data: {
                         password: Md5(this.form.password)
                     }
