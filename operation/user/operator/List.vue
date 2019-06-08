@@ -3,9 +3,15 @@
         <div class="list-top">
             <span class="page-title">运营人员</span>
             <el-button type="primary" icon="el-icon-plus" class="add-btn" @click="add">新增人员</el-button>
-            <el-input placeholder="按人员名称或手机号查询" v-model="filter.queryString" class="input-with-select">
+            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
+        </div>
+        <div class="list-filter">
+            <el-select v-model="filter.status" placeholder="所有状态" clearable filterable @change="filterChange">
+                <el-option v-for="item in filter.statusList" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <div class="list-table">
             <el-table :data="table.data" @selection-change="selectionChange">
@@ -16,7 +22,7 @@
                 <el-table-column prop="username" label="手机号(账号)"></el-table-column>
                 <el-table-column label="角色">
                     <template slot-scope="scope">
-                        {{getRole(scope.row.roles)}}
+                        {{displayRole(scope.row.roles)}}
                     </template>
                 </el-table-column>
                 <el-table-column prop="creator" label="创建人"></el-table-column>
@@ -76,7 +82,7 @@
                     <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
                 <el-form-item label="角色：" prop="roles">
-                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple >
+                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple>
                         <el-option v-for="item in roles" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -116,7 +122,18 @@
             return {
                 loading: false,
                 filter: {
-                    queryString: "",
+                    query: '',
+                    status: 'normal',
+                    statusList: [
+                        {
+                            value: 'normal',
+                            label: '正常'
+                        },
+                        {
+                            value: 'disabled',
+                            label: '停用'
+                        }
+                    ]
                 },
                 table: {
                     data: [],
@@ -177,15 +194,18 @@
             }
         },
         watch: {},
-        computed: {
-        },
+        computed: {},
         methods: {
             search() {
                 this.page.currentPage = 1;
                 this.fetchList();
             },
-            getRole(roles){
-                let roleNames = roles.map((item)=>{
+            filterChange(){
+                this.filter.query = "";
+                this.fetchList();
+            },
+            displayRole(roles) {
+                let roleNames = roles.map((item) => {
                     return item.name;
                 });
                 return roleNames.join(',');
@@ -202,10 +222,9 @@
                     url: this.$basePath + "/admin/operator",
                     params: {
                         pageSize: 10,
-                        pageNum: this.page.currentPage
-                    },
-                    data: {
-                        queryString: this.filter.queryString
+                        pageNum: this.page.currentPage,
+                        search: this.filter.query,
+                        status: this.filter.status
                     }
                 }).then((response) => {
                     this.loading = false;
@@ -282,7 +301,7 @@
             edit(row) {
                 this.form.id = row.id;
                 this.form.username = row.username;
-                this.form.roles = row.roles.map((item)=>{
+                this.form.roles = row.roles.map((item) => {
                     return item.id;
                 });
                 this.editDialog.visible = true;
@@ -372,8 +391,8 @@
 
 <style scoped lang="less">
     .operator-list {
-        .el-dialog{
-            .el-select{
+        .el-dialog {
+            .el-select {
                 width: 360px;
             }
         }
