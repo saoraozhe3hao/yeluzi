@@ -365,7 +365,7 @@
                     method: "put",
                     url: this.$basePath + "/admin/operator/" + this.form.id + "/password",
                     data: {
-                        password: Md5(this.form.password)
+                        pwd: Md5(this.form.password)
                     }
                 }).then((response) => {
                     this.loading = false;
