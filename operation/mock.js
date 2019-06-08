@@ -6,7 +6,7 @@ let commonId = Random.integer(0);
 
 function mock() {
     // 我的 详情 接口
-    Mock.mock(/\/me/, function () {
+    Mock.mock(/\/me$/, function () {
         return {
             code: "0",
             data: {

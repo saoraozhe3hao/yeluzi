@@ -49,11 +49,11 @@
                 <el-form-item label="身份证号：" prop="idNumber">
                     <el-input v-model="form.idNumber" maxlength="20" placeholder="请输入"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号：" prop="mobile">
-                    <el-input v-model="form.mobile" maxlength="11" placeholder="请输入"></el-input>
+                <el-form-item label="手机号：" prop="username">
+                    <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
-                <el-form-item label="角色：" prop="role">
-                    <el-select v-model="form.role" filterable placeholder="请选择">
+                <el-form-item label="角色：" prop="roles">
+                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple>
                         <el-option v-for="item in roles" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -75,7 +75,7 @@
                 <el-form-item label="手机号：" prop="username">
                     <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
-                <el-form-item label="角色：" prop="role">
+                <el-form-item label="角色：" prop="roles">
                     <el-select v-model="form.roles" filterable placeholder="请选择" multiple >
                         <el-option v-for="item in roles" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
@@ -240,6 +240,7 @@
                 this.$nextTick(function () {
                     this.$refs.addForm.clearValidate();
                 });
+                this.fetchRoles();
             },
             addConfirm() {
                 this.$refs.addForm.validate((valid) => {
@@ -254,13 +255,13 @@
                 this.loading = true;
                 this.$axios({
                     method: "post",
-                    url: this.$basePath + "/admin/custom/service/manage/user",
+                    url: this.$basePath + "/admin/operator",
                     data: {
                         name: this.form.name,
                         idNumber: this.form.idNumber,
-                        mobile: this.form.mobile,
-                        role: this.form.role,
-                        password: Md5(this.form.password)
+                        username: this.form.username,
+                        roleIds: this.form.roles,
+                        pwd: Md5(this.form.password)
                     }
                 }).then((response) => {
                     this.loading = false;
