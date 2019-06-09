@@ -3,7 +3,8 @@
         <div class="list-top">
             <span class="page-title">运营人员</span>
             <el-button type="primary" icon="el-icon-plus" class="add-btn" @click="add">新增人员</el-button>
-            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select" clearable @clear="search">
+            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select" clearable
+                      @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
         </div>
@@ -67,7 +68,7 @@
                     <el-input v-model="form.password" maxlength="16" placeholder="请输入" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="重复密码：" prop="repeatPwd">
-                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password"></el-input>
+                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password" @keyup.enter.native="addConfirm"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -82,7 +83,7 @@
                     <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
                 <el-form-item label="角色：" prop="roles">
-                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple>
+                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple @keyup.enter.native="editConfirm">
                         <el-option v-for="item in roles" :key="item.id" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -99,7 +100,8 @@
                     <el-input v-model="form.password" maxlength="16" placeholder="请输入" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="重复新密码：" prop="repeatPwd">
-                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password"></el-input>
+                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password"
+                              @keyup.enter.native="resetConfirm"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -196,7 +198,7 @@
                 this.page.currentPage = 1;
                 this.fetchList();
             },
-            filterChange(){
+            filterChange() {
                 this.page.currentPage = 1;
                 this.filter.query = "";
                 this.fetchList();

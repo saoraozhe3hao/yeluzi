@@ -11,7 +11,7 @@
                     <el-input type="password" v-model="form.j_password" maxlength="16" placeholder="密码"></el-input>
                 </el-form-item>
                 <el-form-item label="" prop="j_captcha">
-                    <el-input type="captcha" v-model="form.j_captcha" maxlength="4" placeholder="验证码" class="captcha-input"></el-input>
+                    <el-input type="captcha" v-model="form.j_captcha" maxlength="4" placeholder="验证码" class="captcha-input" @keyup.enter.native="validateForm"></el-input>
                     <img :src="$basePath + '/captcha?' + form.captchaNum" class="captcha-img" @click="fetchCaptcha"/>
                 </el-form-item>
                 <el-form-item>

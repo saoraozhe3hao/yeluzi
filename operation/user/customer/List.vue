@@ -2,7 +2,8 @@
     <div class="customer-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">客户</span>
-            <el-input placeholder="按昵称或手机号查询" v-model="filter.query" class="input-with-select" clearable @clear="search">
+            <el-input placeholder="按昵称或手机号查询" v-model="filter.query" class="input-with-select" clearable @clear="search"
+                      @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
         </div>
@@ -24,7 +25,8 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="enable(scope.row)" v-if="scope.row.status == 'forbidden'">启用</el-button>
+                        <el-button type="text" @click="enable(scope.row)" v-if="scope.row.status == 'forbidden'">启用
+                        </el-button>
                         <el-button type="text" @click="disable(scope.row)" v-if="scope.row.status == 'normal'">禁用
                         </el-button>
                     </template>
@@ -75,7 +77,7 @@
                 this.page.currentPage = 1;
                 this.fetchList();
             },
-            filterChange(){
+            filterChange() {
                 this.page.currentPage = 1;
                 this.filter.query = "";
                 this.fetchList();
