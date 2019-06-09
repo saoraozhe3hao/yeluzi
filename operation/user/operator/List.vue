@@ -3,7 +3,7 @@
         <div class="list-top">
             <span class="page-title">运营人员</span>
             <el-button type="primary" icon="el-icon-plus" class="add-btn" @click="add">新增人员</el-button>
-            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select">
+            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select" clearable @clear="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
         </div>
@@ -28,7 +28,7 @@
                 <el-table-column prop="creator" label="创建人"></el-table-column>
                 <el-table-column label="状态">
                     <template slot-scope="scope">
-                        {{statusMap[scope.row.status]}}
+                        {{displayStatus(scope.row.status)}}
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="150">
@@ -139,10 +139,6 @@
                     data: [],
                     selection: []
                 },
-                statusMap: {
-                    normal: '正常',
-                    disabled: '停用'
-                },
                 batch: {
                     operations: [
                         {
@@ -201,6 +197,7 @@
                 this.fetchList();
             },
             filterChange(){
+                this.page.currentPage = 1;
                 this.filter.query = "";
                 this.fetchList();
             },
@@ -209,6 +206,12 @@
                     return item.name;
                 });
                 return roleNames.join(',');
+            },
+            displayStatus(status) {
+                let item = this.filter.statusList.find((item) => {
+                    return item.value === status;
+                });
+                return item && item.label;
             },
             selectionChange(selection) {
                 this.batch.targets = selection.map((item) => {

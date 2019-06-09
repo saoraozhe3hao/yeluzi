@@ -49,7 +49,7 @@
                             },
                             {
                                 authority: 'customer',
-                                label: '用户'
+                                label: '客户'
                             },
                             {
                                 authority: 'message',
