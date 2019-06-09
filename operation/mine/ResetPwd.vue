@@ -55,10 +55,10 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/user/password",
+                    url: this.$basePath + "/password",
                     data: {
-                        oldPassword: Md5(this.form.oldPassword),
-                        newPassword: Md5(this.form.newPassword)
+                        oldPwd: Md5(this.form.oldPassword),
+                        pwd: Md5(this.form.newPassword)
                     }
                 }).then((response) => {
                     this.loading = false;

@@ -22,7 +22,7 @@
                 <el-table-column prop="username" label="手机号(账号)"></el-table-column>
                 <el-table-column label="角色">
                     <template slot-scope="scope">
-                        {{displayRole(scope.row.roles)}}
+                        {{displayRoles(scope.row.roles)}}
                     </template>
                 </el-table-column>
                 <el-table-column prop="creator" label="创建人"></el-table-column>
@@ -204,7 +204,7 @@
                 this.filter.query = "";
                 this.fetchList();
             },
-            displayRole(roles) {
+            displayRoles(roles) {
                 let roleNames = roles.map((item) => {
                     return item.name;
                 });

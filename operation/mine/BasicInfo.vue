@@ -12,10 +12,10 @@
                     {{myDetail.idNumber}}
                 </el-form-item>
                 <el-form-item label="手机号：">
-                    {{myDetail.mobile}}
+                    {{myDetail.username}}
                 </el-form-item>
                 <el-form-item label="角色：">
-                    {{myDetail.role}}
+                    {{roles}}
                 </el-form-item>
             </el-form>
         </div>
@@ -32,6 +32,13 @@
         computed: {
             myDetail: function () {
                 return this.$store.state.myDetail || {};
+            },
+            roles: function () {
+                let roles = this.myDetail.roles || [];
+                let roleNames = roles.map((item) => {
+                    return item.name;
+                });
+                return roleNames.join(',');
             }
         },
         watch: {},
