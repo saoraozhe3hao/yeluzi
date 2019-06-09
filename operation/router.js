@@ -4,6 +4,7 @@ import BasicInfo from './mine/BasicInfo'
 import ResetPwd from './mine/ResetPwd'
 
 import Operator from './user/operator/List'
+import Role from './user/role/List'
 import Customer from './user/customer/List'
 import Message from './user/message/List'
 
@@ -31,6 +32,10 @@ export default new Router({
       {
           path: '/operator',   // 用户 - 运营人员
           component: Operator
+      },
+      {
+          path: '/role',   // 用户 - 运营角色
+          component: Role
       },
       {
           path: '/customer',      // 用户 - 客户

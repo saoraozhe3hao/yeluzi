@@ -48,6 +48,10 @@
                                 label: '运营人员'
                             },
                             {
+                                authority: 'role',
+                                label: '运营角色'
+                            },
+                            {
                                 authority: 'customer',
                                 label: '客户'
                             },

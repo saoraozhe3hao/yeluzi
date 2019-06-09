@@ -1,10 +1,10 @@
 <template>
-    <div class="operator-list" v-loading="loading">
+    <div class="role-list" v-loading="loading">
         <div class="list-top">
-            <span class="page-title">运营人员</span>
-            <el-button type="primary" icon="el-icon-plus" class="add-btn" @click="add">新增人员</el-button>
-            <el-input placeholder="按姓名或手机号查询" v-model="filter.query" class="input-with-select" clearable
-                      @clear="search" @keyup.enter.native="search">
+            <span class="page-title">运营角色</span>
+            <el-button type="primary" icon="el-icon-plus" class="add-btn" @click="add">新增角色</el-button>
+            <el-input placeholder="按名称查询" v-model="filter.query" class="input-with-select" clearable @clear="search"
+                      @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
         </div>
@@ -18,23 +18,19 @@
             <el-table :data="table.data" @selection-change="selectionChange">
                 <el-table-column type="selection" width="50"></el-table-column>
                 <el-table-column prop="id" label="ID"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="idNumber" label="身份证号"></el-table-column>
-                <el-table-column prop="username" label="手机号(账号)"></el-table-column>
-                <el-table-column label="角色">
+                <el-table-column prop="name" label="名称"></el-table-column>
+                <el-table-column label="权限">
                     <template slot-scope="scope">
-                        {{displayRoles(scope.row.roles)}}
+                        {{displayAuthorities(scope.row.authorities)}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="creator" label="创建人"></el-table-column>
                 <el-table-column label="状态">
                     <template slot-scope="scope">
                         {{displayStatus(scope.row.status)}}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150">
+                <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="resetPwd(scope.row)">重置密码</el-button>
                         <el-button type="text" @click="edit(scope.row)">修改</el-button>
                     </template>
                 </el-table-column>
@@ -47,28 +43,17 @@
                            :page-size="10" layout="total, prev, pager, next" :total="page.totalCount">
             </el-pagination>
         </div>
-        <el-dialog title="新增人员" :visible.sync="addDialog.visible" width="500px" :close-on-click-modal="false">
+        <el-dialog title="新增角色" :visible.sync="addDialog.visible" width="500px" :close-on-click-modal="false">
             <!-- 用ref.prop 去 校验 model.prop -->
             <el-form :model="form" ref="addForm" :rules="rules" label-width="100px">
-                <el-form-item label="姓名：" prop="name">
+                <el-form-item label="名称：" prop="name">
                     <el-input v-model="form.name" maxlength="8" placeholder="请输入"></el-input>
                 </el-form-item>
-                <el-form-item label="身份证号：" prop="idNumber">
-                    <el-input v-model="form.idNumber" maxlength="20" placeholder="请输入"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号：" prop="username">
-                    <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
-                </el-form-item>
-                <el-form-item label="角色：" prop="roles">
-                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple>
-                        <el-option v-for="item in allRoles" :key="item.id" :value="item.id" :label="item.name"></el-option>
+                <el-form-item label="权限：" prop="authorities">
+                    <el-select v-model="form.authorities" filterable placeholder="请选择" multiple>
+                        <el-option v-for="item in allAuthorities" :key="item.id" :value="item.id"
+                                   :label="item.label"></el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item label="登录密码：" prop="password">
-                    <el-input v-model="form.password" maxlength="16" placeholder="请输入" type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="重复密码：" prop="repeatPwd">
-                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password" @keyup.enter.native="addConfirm"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -76,15 +61,17 @@
                 <el-button type="primary" @click="addConfirm">确 认</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="编辑人员" :visible.sync="editDialog.visible" width="500px" :close-on-click-modal="false">
+        <el-dialog title="编辑角色" :visible.sync="editDialog.visible" width="500px" :close-on-click-modal="false">
             <!-- 用ref.prop 去 校验 model.prop -->
             <el-form :model="form" ref="editForm" :rules="rules" label-width="100px">
-                <el-form-item label="手机号：" prop="username">
-                    <el-input v-model="form.username" maxlength="11" placeholder="请输入"></el-input>
+                <el-form-item label="名称：" prop="name">
+                    <el-input v-model="form.name" maxlength="11" placeholder="请输入"></el-input>
                 </el-form-item>
-                <el-form-item label="角色：" prop="roles">
-                    <el-select v-model="form.roles" filterable placeholder="请选择" multiple @keyup.enter.native="editConfirm">
-                        <el-option v-for="item in allRoles" :key="item.id" :value="item.id" :label="item.name"></el-option>
+                <el-form-item label="角色：" prop="authorities">
+                    <el-select v-model="form.authorities" filterable placeholder="请选择" multiple
+                               @keyup.enter.native="editConfirm">
+                        <el-option v-for="item in allAuthorities" :key="item.id" :value="item.id"
+                                   :label="item.label"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -93,28 +80,11 @@
                 <el-button type="primary" @click="editConfirm">确 认</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="重置密码" :visible.sync="resetDialog.visible" width="500px" :close-on-click-modal="false">
-            <!-- 用ref.prop 去 校验 model.prop -->
-            <el-form :model="form" ref="resetForm" :rules="rules" label-width="120px">
-                <el-form-item label="新密码：" prop="password">
-                    <el-input v-model="form.password" maxlength="16" placeholder="请输入" type="password"></el-input>
-                </el-form-item>
-                <el-form-item label="重复新密码：" prop="repeatPwd">
-                    <el-input v-model="form.repeatPwd" maxlength="16" placeholder="请输入" type="password"
-                              @keyup.enter.native="resetConfirm"></el-input>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="resetDialog.visible = false">取 消</el-button>
-                <el-button type="primary" @click="resetConfirm">确 认</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
 <script>
     import BatchOperation from "../../../components/BatchOperation"
-    import Md5 from 'md5'
 
     export default {
         components: {
@@ -138,55 +108,43 @@
                     ]
                 },
                 table: {
-                    data: [],
-                    selection: []
-                },
-                batch: {
-                    operations: [
-                        {
-                            label: "启用",
-                            url: "/admin/operator/enable",
-                            method: 'put'
-                        },
-                        {
-                            label: "停用",
-                            url: "/admin/operator/disable",
-                            method: 'put'
-                        }
-                    ],
-                    targets: []
+                    data: []
                 },
                 page: {
                     totalCount: 0,
                     currentPage: 1
                 },
-                allRoles: [],
+                batch: {
+                    operations: [
+                        {
+                            label: "启用",
+                            url: "/admin/role/enable",
+                            method: 'put'
+                        },
+                        {
+                            label: "停用",
+                            url: "/admin/role/disable",
+                            method: 'put'
+                        }
+                    ],
+                    targets: []
+                },
                 addDialog: {
                     visible: false
                 },
                 editDialog: {
                     visible: false
                 },
-                resetDialog: {
-                    visible: false
-                },
+                allAuthorities: [],
                 form: {
                     id: '',
                     name: '',
-                    idNumber: '',
-                    username: '',
-                    roles: [],
-                    password: '',
-                    repeatPwd: ''
+                    authorities: []
                 },
                 rules: {
                     name: this.$validation.fullName,
-                    idNumber: this.$validation.idNumber,
-                    username: this.$validation.mobile,
-                    password: this.$validation.password,
-                    repeatPwd: this.$validation.repeatPwd.call(this, "form.password"),
-                    roles: [
-                        {required: true, message: '请选择角色'},
+                    authorities: [
+                        {required: true, message: '请选择权限'}
                     ]
                 }
             }
@@ -203,28 +161,11 @@
                 this.filter.query = "";
                 this.fetchList();
             },
-            displayRoles(roles) {
-                let roleNames = roles.map((item) => {
-                    return item.name;
-                });
-                return roleNames.join(',');
-            },
-            displayStatus(status) {
-                let item = this.filter.statusList.find((item) => {
-                    return item.value === status;
-                });
-                return item && item.label;
-            },
-            selectionChange(selection) {
-                this.batch.targets = selection.map((item) => {
-                    return item.id;
-                });
-            },
             fetchList() {
                 this.loading = true;
                 this.$axios({
                     method: "get",
-                    url: this.$basePath + "/admin/operator",
+                    url: this.$basePath + "/admin/role",
                     params: {
                         pageSize: 10,
                         pageNum: this.page.currentPage,
@@ -242,16 +183,33 @@
                     this.loading = false;
                 });
             },
-            fetchRoles() {
+            displayAuthorities(authorities) {
+                let labels = authorities.map((item) => {
+                    return item.label;
+                });
+                return labels.join(',');
+            },
+            displayStatus(status) {
+                let item = this.filter.statusList.find((item) => {
+                    return item.value === status;
+                });
+                return item && item.label;
+            },
+            selectionChange(selection) {
+                this.batch.targets = selection.map((item) => {
+                    return item.id;
+                });
+            },
+            fetchAuthorities() {
                 this.loading = true;
                 this.$axios({
                     method: "get",
-                    url: this.$basePath + "/admin/operator/role"
+                    url: this.$basePath + "/admin/role/authority"
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.allRoles = response.data;
+                        this.allAuthorities = response.data;
                     }
                 }).catch(() => {
                     this.loading = false;
@@ -264,7 +222,7 @@
                 this.$nextTick(function () {
                     this.$refs.addForm.clearValidate();
                 });
-                this.fetchRoles();
+                this.fetchAuthorities();
             },
             addConfirm() {
                 this.$refs.addForm.validate((valid) => {
@@ -279,13 +237,10 @@
                 this.loading = true;
                 this.$axios({
                     method: "post",
-                    url: this.$basePath + "/admin/operator",
+                    url: this.$basePath + "/admin/role",
                     data: {
                         name: this.form.name,
-                        idNumber: this.form.idNumber,
-                        username: this.form.username,
-                        roleIds: this.form.roles,
-                        pwd: Md5(this.form.password)
+                        authorityIds: this.form.authorities
                     }
                 }).then((response) => {
                     this.loading = false;
@@ -305,12 +260,12 @@
             /*******  编辑 对话框  *******/
             edit(row) {
                 this.form.id = row.id;
-                this.form.username = row.username;
-                this.form.roles = row.roles.map((item) => {
+                this.form.name = row.name;
+                this.form.authorities = row.authorities.map((item) => {
                     return item.id;
                 });
                 this.editDialog.visible = true;
-                this.fetchRoles();
+                this.fetchAuthorities();
             },
             editConfirm() {
                 this.$refs.editForm.validate((valid) => {
@@ -325,58 +280,16 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/operator/" + this.form.id,
+                    url: this.$basePath + "/admin/role/" + this.form.id,
                     data: {
-                        username: this.form.username,
-                        roleIds: this.form.roles
+                        name: this.form.name,
+                        authorityIds: this.form.authorities
                     }
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response.code == "0") {
                         this.editDialog.visible = false;
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                        this.fetchList();
-                    }
-                }).catch(() => {
-                    this.loading = false;
-                });
-            },
-            /*******  重置密码 对话框  *******/
-            resetPwd(row) {
-                this.form.id = row.id;
-                this.form.password = '';
-                this.form.repeatPwd = '';
-                this.resetDialog.visible = true;
-                this.$nextTick(function () {
-                    this.$refs.resetForm.clearValidate();
-                });
-            },
-            resetConfirm() {
-                this.$refs.resetForm.validate((valid) => {
-                    if (valid) {
-                        this.resetSubmit();
-                    } else {
-                        return false;
-                    }
-                });
-            },
-            resetSubmit() {
-                this.loading = true;
-                this.$axios({
-                    method: "put",
-                    url: this.$basePath + "/admin/operator/" + this.form.id + "/password",
-                    data: {
-                        pwd: Md5(this.form.password)
-                    }
-                }).then((response) => {
-                    this.loading = false;
-                    response = response.data;
-                    if (response.code == "0") {
-                        this.resetDialog.visible = false;
                         this.$message({
                             message: '操作成功',
                             type: 'success'
@@ -395,7 +308,7 @@
 </script>
 
 <style scoped lang="less">
-    .operator-list {
+    .role-list {
         .el-dialog {
             .el-select {
                 width: 360px;

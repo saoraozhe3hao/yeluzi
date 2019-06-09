@@ -15,8 +15,8 @@ function mock() {
                 idNumber: Random.integer(10000000000, 19999999999),
                 username: Random.integer(10000000000, 19999999999),
                 roles: [{id: "1", name: "admin"},{id: "2", name: "auditor"}],
-                authorities: ['order.all', 'product.all', 'pastProduct.all', 'comment.all', 'operator.all', 'merchant.all',
-                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all','message.all'] // get,put,delete,post,all
+                authorities: ['order.all', 'product.all', 'comment.all', 'operator.all', 'merchant.all',
+                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all','message.all','role.all'] // get,put,delete,post,all
             }
         }
     });
@@ -127,6 +127,28 @@ function mock() {
             recordsTotal: Random.integer(15, 550)
         }
     });
+    // 运营人员 列表
+    Mock.mock(/\/admin\/operator\?/, function () {
+        let data = [];
+        for (let i = 0; i < 10; i++) {
+            data.push({
+                id: Random.integer(0),
+                name: "姓名" + Random.integer(0),
+                idNumber: Random.integer(10000000000, 19999999999),
+                roles: [{id: 100001, name: "系统管理员"},{id: 100002, name: "审计员"}],
+                username: Random.integer(10000000000, 19999999999),
+                creator: "创建人" + Random.integer(0),
+                status: Random.pick(["disabled", "normal"])
+            });
+        }
+        return {
+            code: "0",
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
+        }
+    });
     // 角色 选项
     Mock.mock(/\/admin\/operator\/role/, function () {
         return {
@@ -147,18 +169,71 @@ function mock() {
             ]
         }
     });
-    // 运营人员 列表
-    Mock.mock(/\/admin\/operator/, function () {
+    // 运营角色 列表
+    Mock.mock(/\/admin\/role\?/, function () {
         let data = [];
         for (let i = 0; i < 10; i++) {
             data.push({
                 id: Random.integer(0),
-                name: "姓名" + Random.integer(0),
-                idNumber: Random.integer(10000000000, 19999999999),
-                roles: [{id: 100001, name: "系统管理员"},{id: 100002, name: "审计员"}],
-                username: Random.integer(10000000000, 19999999999),
-                creator: "创建人" + Random.integer(0),
-                status: Random.pick(["disabled", "normal"])
+                name: "角色" + Random.integer(0),
+                status: Random.pick(["disabled", "normal"]),
+                authorities: [
+                    {
+                        "id": 100004,
+                        "name": "operator.all",
+                        "label": "运营人员"
+                    },
+                    {
+                        "id": 100011,
+                        "name": "role.all",
+                        "label": "角色"
+                    },
+                    {
+                        "id": 100006,
+                        "name": "customer.all",
+                        "label": "客户"
+                    },
+                    {
+                        "id": 100010,
+                        "name": "message.all",
+                        "label": "客户留言"
+                    },
+                    {
+                        "id": 100002,
+                        "name": "product.all",
+                        "label": "商品"
+                    },
+                    {
+                        "id": 100005,
+                        "name": "merchant.all",
+                        "label": "商户"
+                    },
+                    {
+                        "id": 100008,
+                        "name": "tipOff.all",
+                        "label": "商户举报"
+                    },
+                    {
+                        "id": 100009,
+                        "name": "withdraw.all",
+                        "label": "提现申请"
+                    },
+                    {
+                        "id": 100001,
+                        "name": "order.all",
+                        "label": "订单"
+                    },
+                    {
+                        "id": 100003,
+                        "name": "comment.all",
+                        "label": "评价"
+                    },
+                    {
+                        "id": 100007,
+                        "name": "refund.all",
+                        "label": "退款"
+                    }
+                ]
             });
         }
         return {
@@ -167,6 +242,69 @@ function mock() {
                 list: data,
                 total: Random.integer(15, 550)
             }
+        }
+    });
+    // 权限 选项
+    Mock.mock(/\/admin\/role\/authority/, function () {
+        return {
+            code: "0",
+            data: [
+                {
+                    "id": 100004,
+                    "name": "operator.all",
+                    "label": "运营人员"
+                },
+                {
+                    "id": 100011,
+                    "name": "role.all",
+                    "label": "角色"
+                },
+                {
+                    "id": 100006,
+                    "name": "customer.all",
+                    "label": "客户"
+                },
+                {
+                    "id": 100010,
+                    "name": "message.all",
+                    "label": "客户留言"
+                },
+                {
+                    "id": 100002,
+                    "name": "product.all",
+                    "label": "商品"
+                },
+                {
+                    "id": 100005,
+                    "name": "merchant.all",
+                    "label": "商户"
+                },
+                {
+                    "id": 100008,
+                    "name": "tipOff.all",
+                    "label": "商户举报"
+                },
+                {
+                    "id": 100009,
+                    "name": "withdraw.all",
+                    "label": "提现申请"
+                },
+                {
+                    "id": 100001,
+                    "name": "order.all",
+                    "label": "订单"
+                },
+                {
+                    "id": 100003,
+                    "name": "comment.all",
+                    "label": "评价"
+                },
+                {
+                    "id": 100007,
+                    "name": "refund.all",
+                    "label": "退款"
+                }
+            ]
         }
     });
     // 商品 列表
