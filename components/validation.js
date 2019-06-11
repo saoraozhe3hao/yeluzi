@@ -57,5 +57,9 @@ export default {
     price: [
         {required: true, message: '请填写价格', trigger: "blur"},
         {pattern: /^\d{1,5}(\.\d{1,2})?$/, message: '请输入整数或2位小数，整数部分最多5位', trigger: "blur"}
+    ],
+    score: [
+        {required: true, message: '请填写降分分数', trigger: "blur"},
+        {pattern: /^\d{1}(\.\d{1})?$/, message: '请输入整数或1位小数，整数部分最多1位', trigger: "blur"}
     ]
 }

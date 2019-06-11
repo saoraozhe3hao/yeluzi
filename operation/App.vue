@@ -57,7 +57,7 @@
                             },
                             {
                                 authority: 'message',
-                                label: '用户留言'
+                                label: '客户留言'
                             }
                         ]
                     },

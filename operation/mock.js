@@ -45,15 +45,20 @@ function mock() {
         for (let i = 0; i < 10; i++) {
             data.push({
                 id: Random.integer(0),
-                name: "客户" + Random.integer(0),
-                status: Random.pick(['正常', '禁止发布']),
-                phone: Random.integer(10000000000, 19999999999)
+                merchantName: "商户" + Random.integer(0),
+                realName: "真名" + Random.integer(0),
+                score: '4.6',
+                idNumber: Random.integer(10000000000, 19999999999),
+                status: Random.pick(['normal', 'forbidden']),
+                mobile: Random.integer(10000000000, 19999999999)
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 商户举报 分页列表
@@ -403,34 +408,37 @@ function mock() {
             recordsTotal: Random.integer(15, 550)
         }
     });
-    // 用户留言 分页列表
+    // 客户留言 分页列表
     Mock.mock(/\/admin\/message/, function () {
         let data = [];
         for (let i = 0; i < 10; i++) {
             data.push({
                 id: Random.integer(0),
                 customerId: Random.integer(0),
-                customerName: "客户" + Random.integer(0),
+                customerNick: "客户" + Random.integer(0),
                 detail: "举报详情" + Random.integer(0),
-                replies: [
+                time: Random.datetime(),
+                replyList: [
                     {
                         operator: "运营人" + Random.integer(0),
                         time: Random.date(),
-                        content: "内容" + Random.integer(0)
+                        detail: "内容" + Random.integer(0)
                     },
                     {
                         operator: "运营人" + Random.integer(0),
                         time: Random.date(),
-                        content: "内容" + Random.integer(0)
+                        detail: "内容" + Random.integer(0)
                     }
                 ],
-                status: Random.pick(['未回复', '已回复'])
+                status: Random.pick(['pending', 'replied'])
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
 

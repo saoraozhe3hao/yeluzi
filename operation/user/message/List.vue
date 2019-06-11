@@ -1,13 +1,23 @@
 <template>
     <div class="tip-off-list" v-loading="loading">
         <div class="list-top">
-            <span class="page-title">商户举报</span>
+            <span class="page-title">客户留言</span>
+            <el-input placeholder="按客户ID或昵称查询" v-model="filter.query" class="input-with-select" clearable
+                      @clear="search" @keyup.enter.native="search">
+                <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+            </el-input>
+        </div>
+        <div class="list-filter">
+            <el-select v-model="filter.status" placeholder="所有状态" clearable filterable @change="filterChange">
+                <el-option v-for="item in filter.statusList" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <div class="list-table">
             <el-table :data="table.data">
                 <el-table-column prop="id" label="ID"></el-table-column>
                 <el-table-column prop="customerId" label="客户ID"></el-table-column>
-                <el-table-column prop="customerName" label="客户"></el-table-column>
+                <el-table-column prop="customerNick" label="客户昵称"></el-table-column>
                 <el-table-column label="内容">
                     <template slot-scope="scope">
                         <el-popover placement="left" trigger="hover" :content="scope.row.detail">
@@ -15,17 +25,22 @@
                         </el-popover>
                     </template>
                 </el-table-column>
+                <el-table-column prop="time" label="留言时间"></el-table-column>
                 <el-table-column label="回复记录">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="scope.row.replyList.length">
                         <el-popover placement="left" trigger="hover">
-                            <el-button slot="reference" type="text" v-if="scope.row.replies.length">查看</el-button>
-                            <div v-for="item in scope.row.replies">
-                                {{item.operator}} {{item.time}}: {{item.content}}
+                            <div v-for="item in scope.row.replyList">
+                                {{item.operator}} {{item.time}}: {{item.detail}}
                             </div>
+                            <el-button slot="reference" type="text">查看</el-button>
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        {{displayStatus(scope.row.status)}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" @click="reply(scope.row)">回复</el-button>
@@ -60,18 +75,16 @@
             return {
                 loading: false,
                 filter: {
-                    statuses: [
+                    query: '',
+                    status: 'pending',
+                    statusList: [
                         {
-                            value: 0,
-                            label: '待处理'
+                            value: 'pending',
+                            label: '未回复'
                         },
                         {
-                            value: 1,
-                            label: '处理中'
-                        },
-                        {
-                            value: 2,
-                            label: '办结'
+                            value: 'replied',
+                            label: '已回复'
                         }
                     ]
                 },
@@ -103,22 +116,35 @@
                 this.page.currentPage = 1;
                 this.fetchList();
             },
+            filterChange() {
+                this.page.currentPage = 1;
+                this.filter.query = "";
+                this.fetchList();
+            },
+            displayStatus(status) {
+                let item = this.filter.statusList.find((item) => {
+                    return item.value === status;
+                });
+                return item && item.label;
+            },
             fetchList() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
+                    method: "get",
                     url: this.$basePath + "/admin/message",
                     params: {
-                        length: 10,
-                        start: (this.page.currentPage - 1) * 10
+                        pageSize: 10,
+                        pageNum: this.page.currentPage,
+                        search: this.filter.query,
+                        status: this.filter.status
                     },
                     data: {}
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.table.data = response.data || [];
-                        this.page.totalCount = response.recordsTotal;
+                        this.table.data = response.data.list || [];
+                        this.page.totalCount = response.data.total;
                     }
                 }).catch(() => {
                     this.loading = false;
@@ -145,10 +171,10 @@
             replySubmit() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
-                    url: this.$basePath + "/admin/tipOff/" + this.replyDialog.model.id + "/reply",
+                    method: "put",
+                    url: this.$basePath + "/admin/message/" + this.replyDialog.model.id + "/reply",
                     data: {
-                        reply: this.replyDialog.model.reply
+                        detail: this.replyDialog.model.reply
                     }
                 }).then((response) => {
                     this.loading = false;
