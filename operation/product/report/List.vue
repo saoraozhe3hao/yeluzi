@@ -2,7 +2,7 @@
     <div class="tip-off-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">商户举报</span>
-            <el-input placeholder="按客户名或商家名查询" v-model="filter.query" class="input-with-select" clearable
+            <el-input placeholder="按客户名或商户名查询" v-model="filter.query" class="input-with-select" clearable
                       @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>

@@ -21,6 +21,7 @@
                 <el-table-column prop="realName" label="实名"></el-table-column>
                 <el-table-column prop="idNumber" label="身份证号"></el-table-column>
                 <el-table-column prop="score" label="评分"></el-table-column>
+                <el-table-column prop="balance" label="余额"></el-table-column>
                 <el-table-column label="状态">
                     <template slot-scope="scope">
                         {{displayStatus(scope.row.status)}}

@@ -45,6 +45,7 @@ function mock() {
         for (let i = 0; i < 10; i++) {
             data.push({
                 id: Random.integer(0),
+                balance: Random.integer(0),
                 merchantName: "商户" + Random.integer(0),
                 realName: "真名" + Random.integer(0),
                 score: '4.6',
@@ -111,19 +112,25 @@ function mock() {
             data.push({
                 id: Random.integer(0),
                 merchantId: Random.integer(0),
-                merchantName: "商户" + Random.integer(0),
-                name: "姓名" + Random.integer(0),
-                cardNumber: Random.integer(0),
-                bank: "开户行" + Random.integer(0),
+                merchant: {
+                    bankNumber: Random.integer(0),
+                    id:  Random.integer(0),
+                    merchantName: "商户" + Random.integer(0),
+                    openingBank: "开户行" + Random.integer(0),
+                    realName: "姓名" + Random.integer(0),
+                },
                 amount: Random.integer(0, 1232),
                 operator: "操作人" + Random.integer(0),
-                status: Random.pick(['待支付', '支付中', '已支付'])
+                status: Random.pick(['pending', 'handling', 'paid']),
+                time: Random.datetime()
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 运营人员 列表
