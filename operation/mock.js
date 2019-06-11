@@ -16,7 +16,7 @@ function mock() {
                 username: Random.integer(10000000000, 19999999999),
                 roles: [{id: "1", name: "admin"},{id: "2", name: "auditor"}],
                 authorities: ['order.all', 'product.all', 'comment.all', 'operator.all', 'merchant.all',
-                     'customer.all', 'refund.all', 'tipOff.all', 'withdraw.all','message.all','role.all'] // get,put,delete,post,all
+                     'customer.all', 'refund.all', 'report.all', 'withdraw.all','message.all','role.all'] // get,put,delete,post,all
             }
         }
     });
@@ -62,7 +62,7 @@ function mock() {
         }
     });
     // 商户举报 分页列表
-    Mock.mock(/\/admin\/tipOff/, function () {
+    Mock.mock(/\/admin\/report/, function () {
         let data = [];
         for (let i = 0; i < 10; i++) {
             data.push({
@@ -71,43 +71,37 @@ function mock() {
                 customerName: "客户" + Random.integer(0),
                 merchantId: Random.integer(0),
                 merchantName: "商户" + Random.integer(0),
-                type: Random.pick(['联系不上趣导', '趣导拒绝提供服务', '其他']),
-                refund: Random.pick([0, 1]),
+                type: Random.pick(['outOfContact', 'denialOfService', 'other']),
                 detail: "举报详情" + Random.integer(0),
-                replies: [
+                recordList: [
                     {
-                        operator: "运营人" + Random.integer(0),
-                        time: Random.date(),
-                        content: "内容" + Random.integer(0)
+                        detail: "afsadf",
+                        id: "1",
+                        operator: "洪真全",
+                        operatorId: "1",
+                        time: "2019-10-11 11:23:44",
+                        type: "reply"
                     },
                     {
-                        operator: "运营人" + Random.integer(0),
-                        time: Random.date(),
-                        content: "内容" + Random.integer(0)
+                        detail: "ccccccccc",
+                        id: "2",
+                        operator: "洪真全",
+                        operatorId: "1",
+                        reportStatus: "pending",
+                        time: "2019-10-11 11:23:44",
+                        type: "conduct"
                     }
                 ],
-                conducts: [
-                    {
-                        operator: "运营人" + Random.integer(0),
-                        time: Random.date(),
-                        status: Random.pick(['待受理', '受理中', '办结']),
-                        content: "内容" + Random.integer(0)
-                    },
-                    {
-                        operator: "运营人" + Random.integer(0),
-                        time: Random.date(),
-                        status: Random.pick(['待受理', '受理中', '办结']),
-                        content: "内容" + Random.integer(0)
-                    }
-                ],
-                status: Random.pick(['待受理', '受理中', '办结']),
-                phone: Random.integer(10000000000, 19999999999)
+                status: Random.pick(['pending', 'handling', 'done']),
+                time: Random.datetime()
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 提现申请 分页列表
@@ -215,7 +209,7 @@ function mock() {
                     },
                     {
                         "id": 100008,
-                        "name": "tipOff.all",
+                        "name": "report.all",
                         "label": "商户举报"
                     },
                     {
@@ -286,7 +280,7 @@ function mock() {
                 },
                 {
                     "id": 100008,
-                    "name": "tipOff.all",
+                    "name": "report.all",
                     "label": "商户举报"
                 },
                 {

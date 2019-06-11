@@ -11,7 +11,7 @@ import Message from './user/message/List'
 import Product from './product/product/List'
 
 import Merchant from './product/merchant/List'
-import TipOff from './product/tipOff/List'
+import Report from './product/report/List'
 import Withdraw from './product/withdraw/List'
 
 import Order from './order/order/List'
@@ -56,8 +56,8 @@ export default new Router({
           component: Merchant
       },
       {
-          path: '/tipOff',      // 商户 - 商户举报
-          component: TipOff
+          path: '/report',      // 商户 - 商户举报
+          component: Report
       },
       {
           path: '/withdraw',      // 商户 - 提现申请

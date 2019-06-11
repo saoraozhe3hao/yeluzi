@@ -78,7 +78,7 @@
                                 label: '商户'
                             },
                             {
-                                authority: 'tipOff',
+                                authority: 'report',
                                 label: '商户举报'
                             },
                             {
