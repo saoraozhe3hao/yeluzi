@@ -2,9 +2,16 @@
     <div class="product-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">商品</span>
-            <el-input placeholder="按商品名称或ID查询" v-model="filter.searchKey" class="input-with-select">
+            <el-input placeholder="按商品ID或商户ID查询" v-model="filter.query" class="input-with-select" clearable
+                      @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
+        </div>
+        <div class="list-filter">
+            <el-select v-model="filter.status" placeholder="所有状态" clearable filterable @change="filterChange">
+                <el-option v-for="item in filter.statusList" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <div class="list-table">
             <el-table ref="multipleTable" :data="table.data">
@@ -12,17 +19,21 @@
                 <el-table-column prop="name" label="名称" width="100px"></el-table-column>
                 <el-table-column prop="merchantId" label="商户ID" width="100px"></el-table-column>
                 <el-table-column prop="merchantName" label="商户" width="100px"></el-table-column>
-                <el-table-column prop="timeRange" label="时间范围" width="100px"></el-table-column>
-                <el-table-column prop="address" label="地点"></el-table-column>
+                <el-table-column label="时间范围" width="100px">
+                    <template slot-scope="scope">
+                        {{scope.row.startDate}}至{{scope.row.endDate}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="location" label="地点"></el-table-column>
                 <el-table-column label="标签">
                     <template slot-scope="scope">
                         <el-popover placement="left" trigger="hover">
                             <el-button slot="reference" type="text">查看</el-button>
-                            <div>{{scope.row.labels.join(',')}}</div>
+                            <div>{{scope.row.tags}}</div>
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="limit" label="接待上限"></el-table-column>
+                <el-table-column prop="topLimit" label="接待上限"></el-table-column>
                 <el-table-column label="活动详情">
                     <template slot-scope="scope">
                         <el-popover placement="left" trigger="hover">
@@ -71,13 +82,17 @@
                         <el-button type="text" @click="showCarousel(scope.row)">查看</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        {{displayStatus(scope.row.status)}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="100px">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="verify(scope.row)" v-if="scope.row.status == '待审核'">审核
+                        <el-button type="text" @click="audit(scope.row)" v-if="scope.row.status == 'pending'">审核
                         </el-button>
                         <el-button type="text" @click="offShelf(scope.row)"
-                                   v-if="['预约中','零预约'].includes(scope.row.status)">下架
+                                   v-if="['ordering','noneOrder'].includes(scope.row.status)">下架
                         </el-button>
                     </template>
                 </el-table-column>
@@ -88,22 +103,22 @@
                            :page-size="10" layout="total, prev, pager, next" :total="page.totalCount">
             </el-pagination>
         </div>
-        <el-dialog title="审核" :visible.sync="verifyDialog.visible" width="500px" :close-on-click-modal="false">
-            <el-form :model="verifyDialog.model" ref="verifyForm" :rules="rules" label-width="120">
+        <el-dialog title="审核" :visible.sync="auditDialog.visible" width="500px" :close-on-click-modal="false">
+            <el-form :model="auditDialog.model" ref="auditForm" :rules="rules" label-width="120">
                 <el-form-item label="审核结果：" required="">
-                    <el-radio-group v-model="verifyDialog.model.auditResult">
-                        <el-radio :label="1">通过</el-radio>
-                        <el-radio :label="2">不通过</el-radio>
+                    <el-radio-group v-model="auditDialog.model.auditResult">
+                        <el-radio label="approve">通过</el-radio>
+                        <el-radio label="disapprove">不通过</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="不通过理由：" prop="refuseReason" v-if="verifyDialog.model.auditResult == 2">
+                <el-form-item label="不通过理由：" prop="refuseReason" v-if="auditDialog.model.auditResult == 'disapprove'">
                     <el-input type="textarea" :rows="4" placeholder="请输入理由"
-                              v-model="verifyDialog.model.refuseReason" maxlength="200"></el-input>
+                              v-model="auditDialog.model.refuseReason" maxlength="200"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="verifyDialog.visible = false">取 消</el-button>
-                <el-button type="primary" @click="verifyConfirm">确 认</el-button>
+                <el-button @click="auditDialog.visible = false">取 消</el-button>
+                <el-button type="primary" @click="auditConfirm">确 认</el-button>
             </div>
         </el-dialog>
         <dialog-carousel :visible.sync="carousel.visible" :images="carousel.images"
@@ -113,6 +128,7 @@
 
 <script>
     import DialogCarousel from "../../../components/DialogCarousel"
+
     export default {
         components: {
             "dialog-carousel": DialogCarousel
@@ -121,7 +137,30 @@
             return {
                 loading: false,
                 filter: {
-                    searchKey: "",
+                    query: '',
+                    status: '',
+                    statusList: [
+                        {
+                            value: 'pending',
+                            label: '待审核'
+                        },
+                        {
+                            value: 'unapproved',
+                            label: '审核不通过'
+                        },
+                        {
+                            value: 'noneOrder',
+                            label: '零预约'
+                        },
+                        {
+                            value: 'ordering',
+                            label: '预约中'
+                        },
+                        {
+                            value: 'underShelf',
+                            label: '已下架'
+                        }
+                    ]
                 },
                 table: {
                     data: []
@@ -130,11 +169,11 @@
                     totalCount: 0,
                     currentPage: 1
                 },
-                verifyDialog: {
+                auditDialog: {
                     visible: false,
                     model: {
                         id: '',
-                        auditResult: 2,
+                        auditResult: 'approve',
                         refuseReason: ''
                     }
                 },
@@ -157,22 +196,34 @@
                 this.page.currentPage = 1;
                 this.fetchList();
             },
+            filterChange() {
+                this.page.currentPage = 1;
+                this.filter.query = "";
+                this.fetchList();
+            },
+            displayStatus(status) {
+                let item = this.filter.statusList.find((item) => {
+                    return item.value === status;
+                });
+                return item && item.label;
+            },
             fetchList() {
                 this.loading = true;
                 this.$axios({
                     method: "get",
                     url: this.$basePath + "/admin/product",
                     params: {
-                        length: 10,
-                        start: (this.page.currentPage - 1) * 10,
-                        searchKey: this.filter.searchKey
+                        pageSize: 10,
+                        pageNum: this.page.currentPage,
+                        search: this.filter.query,
+                        status: this.filter.status
                     }
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.table.data = response.data || [];
-                        this.page.totalCount = response.recordsTotal;
+                        this.table.data = response.data.list || [];
+                        this.page.totalCount = response.data.total;
                     }
                 }).catch(() => {
                     this.loading = false;
@@ -182,13 +233,13 @@
                 this.carousel.visible = true;
                 this.carousel.activeIndex = 0;
                 this.carousel.images = [];
-                row.activityPhotos.forEach((item)=>{
+                row.activityPhotos.forEach((item) => {
                     this.carousel.images.push({
                         label: '活动',
                         src: item
                     });
                 });
-                row.stayOverPhotos.forEach((item)=>{
+                row.stayOverPhotos.forEach((item) => {
                     this.carousel.images.push({
                         label: '住宿',
                         src: item
@@ -202,15 +253,16 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.operateAjax("/admin/customer/" + row.id);
+                    this.operateAjax(`/admin/product/${row.id}/offShelf/`);
                 }).catch(() => {
                 });
             },
-            operateAjax(url) {
+            operateAjax(url, data) {
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + url
+                    url: this.$basePath + url,
+                    data
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
@@ -219,6 +271,7 @@
                             message: '操作成功',
                             type: 'success'
                         });
+                        this.auditDialog.visible = false;
                         this.fetchList();
                     }
                 }).catch(() => {
@@ -226,46 +279,25 @@
                 });
             },
             /** 审核 对话框 **/
-            verify(row) {
-                this.verifyDialog.visible = true;
-                this.$copyFields(Object.keys(this.verifyDialog.model), {
+            audit(row) {
+                this.auditDialog.visible = true;
+                this.$copyFields(Object.keys(this.auditDialog.model), {
                     id: row.id,
-                    auditResult: 1,
+                    auditResult: 'approve',
                     refuseReason: ''
-                }, this.verifyDialog.model);
+                }, this.auditDialog.model);
                 this.$nextTick(function () {
-                    this.$refs.verifyForm.clearValidate();
+                    this.$refs.auditForm.clearValidate();
                 });
             },
-            verifyConfirm() {
-                this.$refs.verifyForm.validate((valid) => {
+            auditConfirm() {
+                this.$refs.auditForm.validate((valid) => {
                     if (valid) {
-                        this.verifySubmit();
+                        let model = this.auditDialog.model;
+                        this.operateAjax(`/admin/product/${model.id}/${model.auditResult}`, {refuseReason: model.refuseReason});
                     } else {
                         return false;
                     }
-                });
-            },
-            verifySubmit() {
-                this.loading = true;
-                let data = this.$copyFields(Object.keys(this.verifyDialog.model), this.verifyDialog.model, null);
-                this.$axios({
-                    method: "put",
-                    url: this.$basePath + "/admin/custom/service/members/audit",
-                    data: data
-                }).then((response) => {
-                    this.loading = false;
-                    response = response.data;
-                    if (response.code == "0") {
-                        this.verifyDialog.visible = false;
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                        this.fetchList();
-                    }
-                }).catch(() => {
-                    this.loading = false;
                 });
             }
         },

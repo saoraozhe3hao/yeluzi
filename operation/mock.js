@@ -322,10 +322,11 @@ function mock() {
                 name: "商品" + Random.integer(0),
                 merchantId: Random.integer(100000000, 200000000),
                 merchantName: "商户" + Random.integer(0),
-                timeRange: Random.datetime(),
-                address: "地点" + Random.integer(0),
-                labels: ["打野", "民俗", "探秘", "赶海"],
-                limit: Random.integer(0, 100),
+                startDate: Random.date(),
+                endDate: Random.date(),
+                location: "地点" + Random.integer(0),
+                tags: ["打野", "民俗", "探秘", "赶海"],
+                topLimit: Random.integer(0, 100),
                 morningActivity: "早上" + Random.integer(0),
                 lunch: "午饭" + Random.integer(0),
                 afternoonActivity: "下午" + Random.integer(0),
@@ -342,15 +343,17 @@ function mock() {
                 treblePrice: Random.integer(0, 100),
                 sextuplePrice: Random.integer(0, 100),
                 decuplePrice: Random.integer(0, 100),
-                status: Random.pick(['待审核', '审核不通过', '零预约', '预约中', '已下架']),
+                status: Random.pick(['pending', 'unapproved', 'noneOrder', 'ordering', 'underShelf']),
                 activityPhotos: [Random.image(), Random.image(), Random.image()],
                 stayOverPhotos: [Random.image(), Random.image(), Random.image()]
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 评价 列表
