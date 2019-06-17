@@ -325,27 +325,26 @@ function mock() {
                 startDate: Random.date(),
                 endDate: Random.date(),
                 location: "地点" + Random.integer(0),
-                tags: ["打野", "民俗", "探秘", "赶海"],
+                tags: '打野, 民俗, 探秘, 赶海',
                 topLimit: Random.integer(0, 100),
                 morningActivity: "早上" + Random.integer(0),
                 lunch: "午饭" + Random.integer(0),
                 afternoonActivity: "下午" + Random.integer(0),
                 dinner: "午饭" + Random.integer(0),
                 eveningActivity: "晚上" + Random.integer(0),
-                stayOver: Random.integer(0, 2),
                 roomNum: Random.integer(0, 100),
                 roomPrice: Random.integer(0, 100),
                 bedNum: Random.integer(0, 100),
                 bedPrice: Random.integer(0, 100),
-                hotelDetail: "酒店说明" + Random.integer(0),
+                hotelInfo: "酒店说明" + Random.integer(0),
                 singlePrice: Random.integer(0, 100),
                 doublePrice: Random.integer(0, 100),
                 treblePrice: Random.integer(0, 100),
                 sextuplePrice: Random.integer(0, 100),
                 decuplePrice: Random.integer(0, 100),
                 status: Random.pick(['pending', 'unapproved', 'noneOrder', 'ordering', 'underShelf']),
-                activityPhotos: [Random.image(), Random.image(), Random.image()],
-                stayOverPhotos: [Random.image(), Random.image(), Random.image()]
+                activityPhotos: Random.image()+','+Random.image()+','+ Random.image(),
+                stayOverPhotos: Random.image()+','+ Random.image()+','+ Random.image()
             });
         }
         return {

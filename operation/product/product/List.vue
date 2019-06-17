@@ -48,20 +48,13 @@
                 </el-table-column>
                 <el-table-column label="住宿详情">
                     <template slot-scope="scope">
-                        <div v-if="scope.row.stayOver == 0">
-                            无法住宿
-                        </div>
-                        <el-popover placement="left" trigger="hover" v-if="scope.row.stayOver != 0">
+                        <el-popover placement="left" trigger="hover">
                             <el-button slot="reference" type="text">查看</el-button>
-                            <div v-if="scope.row.stayOver == 1">
-                                <div>趣导提供住宿</div>
-                                <div>房间数：{{scope.row.roomNum}}间，{{scope.row.roomPrice}} 元/间</div>
-                                <div>床位数：{{scope.row.bedNum}}个，{{scope.row.bedPrice}} 元/个</div>
-                            </div>
-                            <div v-if="scope.row.stayOver == 2">
-                                <div>附近酒店住宿</div>
-                                <div>{{scope.row.hotelDetail}}</div>
-                            </div>
+                            <div>趣导提供民宿</div>
+                            <div>房间数：{{scope.row.roomNum}}间，{{scope.row.roomPrice}} 元/间</div>
+                            <div>床位数：{{scope.row.bedNum}}个，{{scope.row.bedPrice}} 元/个</div>
+                            <div>附近酒店信息</div>
+                            <div>{{scope.row.hotelInfo}}</div>
                         </el-popover>
                     </template>
                 </el-table-column>
@@ -233,13 +226,13 @@
                 this.carousel.visible = true;
                 this.carousel.activeIndex = 0;
                 this.carousel.images = [];
-                row.activityPhotos.forEach((item) => {
+                row.activityPhotos.split(',').forEach((item) => {
                     this.carousel.images.push({
                         label: '活动',
                         src: item
                     });
                 });
-                row.stayOverPhotos.forEach((item) => {
+                row.stayOverPhotos.split(',').forEach((item) => {
                     this.carousel.images.push({
                         label: '住宿',
                         src: item
