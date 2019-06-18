@@ -2,9 +2,16 @@
     <div class="comment-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">订单</span>
-            <el-input placeholder="按商品名称或ID查询" v-model="filter.searchKey" class="input-with-select">
+            <el-input placeholder="订单/客户/商品/商户ID" v-model="filter.query" class="input-with-select" clearable
+                      @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
+        </div>
+        <div class="list-filter">
+            <el-select v-model="filter.status" placeholder="所有状态" clearable filterable @change="filterChange">
+                <el-option v-for="item in filter.statusList" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
         </div>
         <div class="list-table">
             <el-table ref="multipleTable" :data="table.data">
@@ -26,11 +33,15 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="total" label="总价"></el-table-column>
-                <el-table-column prop="status" label="状态"></el-table-column>
-                <el-table-column prop="refunder" label="退款人"></el-table-column>
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        {{displayStatus(scope.row.status)}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="refunderName" label="退款人"></el-table-column>
                 <el-table-column label="操作" width="100px">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="refund(scope.row)" v-if="scope.row.status != '已退款'">退款</el-button>
+                        <el-button type="text" @click="refund(scope.row)" v-if="showRefund(scope.row)">退款</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -50,7 +61,26 @@
             return {
                 loading: false,
                 filter: {
-                    searchKey: "",
+                    query: '',
+                    status: '',
+                    statusList: [
+                        {
+                            value: 'unused',
+                            label: '待使用'
+                        },
+                        {
+                            value: 'used',
+                            label: '已使用'
+                        },
+                        {
+                            value: 'overdue',
+                            label: '已过期'
+                        },
+                        {
+                            value: 'refunded',
+                            label: '已退款'
+                        }
+                    ]
                 },
                 table: {
                     data: []
@@ -69,24 +99,47 @@
                 this.page.currentPage = 1;
                 this.fetchList();
             },
+            filterChange() {
+                this.page.currentPage = 1;
+                this.filter.query = "";
+                this.fetchList();
+            },
+            displayStatus(status) {
+                let item = this.filter.statusList.find((item) => {
+                    return item.value === status;
+                });
+                return item && item.label;
+            },
+            showRefund(row){
+                switch (row.status) {
+                    case 'unused':
+                        return true;
+                    case 'refunded':
+                        return false;
+                    case 'used':
+                    case 'overdue':
+                        let orderDay = this.$moment(row.orderTime);
+                        let days = this.$moment().diff(orderDay, 'days');
+                        return days <= 7;
+                }
+            },
             fetchList() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
+                    method: "get",
                     url: this.$basePath + "/admin/order",
                     params: {
-                        length: 10,
-                        start: (this.page.currentPage - 1) * 10
-                    },
-                    data: {
-                        searchKey: this.filter.searchKey
+                        pageSize: 10,
+                        pageNum: this.page.currentPage,
+                        search: this.filter.query,
+                        status: this.filter.status
                     }
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.table.data = response.data || [];
-                        this.page.totalCount = response.recordsTotal;
+                        this.table.data = response.data.list || [];
+                        this.page.totalCount = response.data.total;
                     }
                 }).catch(() => {
                     this.loading = false;
@@ -99,7 +152,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.operateAjax("/admin/customer/" + row.id);
+                    this.operateAjax(`/admin/order/${row.id}/refund`);
                 }).catch(() => {
                 });
             },

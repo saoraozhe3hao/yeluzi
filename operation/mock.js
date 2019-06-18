@@ -395,20 +395,22 @@ function mock() {
                 productId: Random.integer(0),
                 productName: "商品" + Random.integer(0),
                 payTime: Random.datetime(),
-                orderTime: Random.datetime(),
+                orderTime: Random.date(),
                 useTime: Random.datetime(),
                 total: Random.integer(0, 1000),
-                status: Random.pick(['待使用', '已使用', '已过期', '已退款']),
+                status: Random.pick(['unused', 'used', 'overdue', 'refunded']),
                 customerNum: Random.integer(0, 100),
                 roomNum: Random.integer(0, 10),
                 bedNum: Random.integer(0, 10),
-                refunder: "运营员" + Random.integer(0),
+                refunderName: "运营员" + Random.integer(0),
             });
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 客户留言 分页列表
