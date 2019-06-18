@@ -362,7 +362,7 @@ function mock() {
             data.push({
                 id: Random.integer(100000000, 200000000),
                 score: Random.integer(0, 100),
-                comment: "评论" + Random.integer(0),
+                detail: "评论" + Random.integer(0),
                 response: "回应" + Random.integer(0),
                 customerId: Random.integer(0),
                 customerName: "客户" + Random.integer(0),
@@ -378,8 +378,10 @@ function mock() {
         }
         return {
             code: "0",
-            data: data,
-            recordsTotal: Random.integer(15, 550)
+            data: {
+                list: data,
+                total: Random.integer(15, 550)
+            }
         }
     });
     // 订单 列表

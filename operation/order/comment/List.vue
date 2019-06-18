@@ -2,7 +2,8 @@
     <div class="comment-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">评价</span>
-            <el-input placeholder="按商品名称或ID查询" v-model="filter.searchKey" class="input-with-select">
+            <el-input placeholder="订单/客户/商品/商户ID" v-model="filter.query" class="input-with-select" clearable
+                      @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
         </div>
@@ -14,7 +15,7 @@
                     <template slot-scope="scope">
                         <el-popover placement="left" trigger="hover">
                             <el-button slot="reference" type="text">查看</el-button>
-                            <div>{{scope.row.comment}}</div>
+                            <div>{{scope.row.detail}}</div>
                         </el-popover>
                     </template>
                 </el-table-column>
@@ -58,7 +59,7 @@
             return {
                 loading: false,
                 filter: {
-                    searchKey: "",
+                    query: ''
                 },
                 table: {
                     data: []
@@ -80,21 +81,19 @@
             fetchList() {
                 this.loading = true;
                 this.$axios({
-                    method: "post",
+                    method: "get",
                     url: this.$basePath + "/admin/comment",
                     params: {
-                        length: 10,
-                        start: (this.page.currentPage - 1) * 10
-                    },
-                    data: {
-                        searchKey: this.filter.searchKey
+                        pageSize: 10,
+                        pageNum: this.page.currentPage,
+                        search: this.filter.query
                     }
                 }).then((response) => {
                     this.loading = false;
                     response = response.data;
                     if (response) {
-                        this.table.data = response.data || [];
-                        this.page.totalCount = response.recordsTotal;
+                        this.table.data = response.data.list || [];
+                        this.page.totalCount = response.data.total;
                     }
                 }).catch(() => {
                     this.loading = false;
@@ -107,14 +106,14 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.operateAjax("/admin/customer/" + row.id);
+                    this.operateAjax("/admin/comment/" + row.id, 'delete');
                 }).catch(() => {
                 });
             },
-            operateAjax(url) {
+            operateAjax(url,method) {
                 this.loading = true;
                 this.$axios({
-                    method: "put",
+                    method: method || "put",
                     url: this.$basePath + url
                 }).then((response) => {
                     this.loading = false;
