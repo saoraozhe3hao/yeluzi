@@ -41,7 +41,7 @@
             return {
                 menus: [
                     {
-                        label: '用户管理',
+                        label: '运营管理',
                         subs: [
                             {
                                 authority: 'operator',
@@ -50,23 +50,6 @@
                             {
                                 authority: 'role',
                                 label: '运营角色'
-                            },
-                            {
-                                authority: 'customer',
-                                label: '客户'
-                            },
-                            {
-                                authority: 'message',
-                                label: '客户留言'
-                            }
-                        ]
-                    },
-                    {
-                        label: '商品管理',
-                        subs: [
-                            {
-                                authority: 'product',
-                                label: '商品'
                             }
                         ]
                     },
@@ -78,12 +61,29 @@
                                 label: '商户'
                             },
                             {
-                                authority: 'accuse',
-                                label: '商户举报'
+                                authority: 'product',
+                                label: '商品'
                             },
                             {
                                 authority: 'withdraw',
                                 label: '提现申请'
+                            }
+                        ]
+                    },
+                    {
+                        label: '客户管理',
+                        subs: [
+                            {
+                                authority: 'customer',
+                                label: '客户'
+                            },
+                            {
+                                authority: 'message',
+                                label: '客户留言'
+                            },
+                            {
+                                authority: 'accuse',
+                                label: '客户投诉'
                             }
                         ]
                     },
