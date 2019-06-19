@@ -11,7 +11,7 @@ import Message from './user/message/List'
 import Product from './product/product/List'
 
 import Merchant from './product/merchant/List'
-import Report from './product/report/List'
+import Accuse from './product/accuse/List'
 import Withdraw from './product/withdraw/List'
 
 import Order from './order/order/List'
@@ -56,8 +56,8 @@ export default new Router({
           component: Merchant
       },
       {
-          path: '/report',      // 商户 - 商户举报
-          component: Report
+          path: '/accuse',      // 商户 - 商户举报
+          component: Accuse
       },
       {
           path: '/withdraw',      // 商户 - 提现申请

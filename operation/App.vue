@@ -78,7 +78,7 @@
                                 label: '商户'
                             },
                             {
-                                authority: 'report',
+                                authority: 'accuse',
                                 label: '商户举报'
                             },
                             {

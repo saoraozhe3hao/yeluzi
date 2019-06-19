@@ -2,7 +2,7 @@
     <div class="tip-off-list" v-loading="loading">
         <div class="list-top">
             <span class="page-title">商户举报</span>
-            <el-input placeholder="按客户名或商户名查询" v-model="filter.query" class="input-with-select" clearable
+            <el-input placeholder="客户ID、商户ID" v-model="filter.query" class="input-with-select" clearable
                       @clear="search" @keyup.enter.native="search">
                 <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
             </el-input>
@@ -35,7 +35,7 @@
                 <el-table-column prop="time" label="举报时间"></el-table-column>
                 <el-table-column label="回复记录">
                     <template slot-scope="scope">
-                        <el-popover placement="left" trigger="hover" v-if="scope.row.recordList.length">
+                        <el-popover placement="left" trigger="hover" v-if="showRecord(scope.row.recordList, 'reply')">
                             <el-button slot="reference" type="text">查看</el-button>
                             <div v-for="item in scope.row.recordList" v-if="item.type=='reply'">
                                 {{item.operator}} {{item.time}}: {{item.detail}}
@@ -45,7 +45,7 @@
                 </el-table-column>
                 <el-table-column label="处理记录">
                     <template slot-scope="scope">
-                        <el-popover placement="left" trigger="hover" v-if="scope.row.recordList.length">
+                        <el-popover placement="left" trigger="hover" v-if="showRecord(scope.row.recordList, 'conduct')">
                             <el-button slot="reference" type="text">查看</el-button>
                             <div v-for="item in scope.row.recordList" v-if="item.type=='conduct'">
                                 {{item.operator}} {{item.time}} {{displayStatus(item.reportStatus)}} : {{item.detail}}
@@ -182,11 +182,17 @@
                 });
                 return item && item.label;
             },
+            showRecord(recordList, type){
+                let typeRecord = recordList.find((item)=>{
+                    return item.type == type;
+                });
+                return !!typeRecord;
+            },
             fetchList() {
                 this.loading = true;
                 this.$axios({
                     method: "get",
-                    url: this.$basePath + "/admin/report",
+                    url: this.$basePath + "/admin/accuse",
                     params: {
                         pageSize: 10,
                         pageNum: this.page.currentPage,
@@ -227,7 +233,7 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/report/" + this.replyDialog.model.id + "/reply",
+                    url: this.$basePath + "/admin/accuse/" + this.replyDialog.model.id + "/reply",
                     data: {
                         detail: this.replyDialog.model.reply
                     }
@@ -269,7 +275,7 @@
                 this.loading = true;
                 this.$axios({
                     method: "put",
-                    url: this.$basePath + "/admin/report/" + this.conductDialog.model.id + "/conduct",
+                    url: this.$basePath + "/admin/accuse/" + this.conductDialog.model.id + "/conduct",
                     data: {
                         reportStatus: this.conductDialog.model.status,
                         detail: this.conductDialog.model.detail
