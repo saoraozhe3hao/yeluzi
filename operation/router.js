@@ -1,8 +1,5 @@
 import Router from 'vue-router'
 
-import BasicInfo from './mine/BasicInfo'
-import ResetPwd from './mine/ResetPwd'
-
 import Operator from './user/operator/List'
 import Role from './user/role/List'
 import Customer from './user/customer/List'
@@ -22,11 +19,11 @@ export default new Router({
   routes: [
       {
           path: '/basic',          // 我的 - 基本信息
-          component: BasicInfo
+          component: ()=> import('./mine/BasicInfo')
       },
       {
           path: '/resetPwd',           // 我的 - 修改密码
-          component: ResetPwd
+          component: ()=> import('./mine/ResetPwd')
       },
 
       {

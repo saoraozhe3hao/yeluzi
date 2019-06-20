@@ -1,4 +1,3 @@
-import  "babel-polyfill"      // 兼容IE
 import '../assets/mixin.less'
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -11,7 +10,9 @@ import qs from 'qs'
 import axios from 'axios'
 import Moment from 'moment'
 import validation from '../components/validation'
-import mock from './mock'
+if ( location.hostname == "localhost" ){
+    import('./mock');
+}
 
 Vue.use(ElementUI);
 Vue.use(Router);

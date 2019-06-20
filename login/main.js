@@ -1,4 +1,3 @@
-import  "babel-polyfill"
 import '../assets/mixin.less'
 import Vue from 'vue'
 import ElementUI from 'element-ui'
@@ -8,7 +7,9 @@ import qs from 'qs'
 import axios from 'axios'
 import Moment from 'moment'
 import validation from '../components/validation'
-import mock from './mock'
+if ( location.hostname == "localhost" ){
+  import('./mock');
+}
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;

@@ -225,7 +225,9 @@
             });
         },
         mounted () {
-            this.fetchDetail();
+            setTimeout(()=>{
+                this.fetchDetail();
+            },100);
         }
     }
 </script>

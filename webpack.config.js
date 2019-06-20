@@ -6,15 +6,40 @@ let path = require('path'),
     {VueLoaderPlugin} = require('vue-loader'),
     MiniCssExtractPlugin = require("mini-css-extract-plugin"),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
-    { CleanWebpackPlugin } = require('clean-webpack-plugin');
+    {CleanWebpackPlugin} = require('clean-webpack-plugin'),
+    OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'),
+    args = process.argv, // 获取命令参数，数组格式
+    dist = path.resolve(__dirname, "dist");
 
-// 获取命令参数，命令写在package.json中
-let args = process.argv;
-// 确定目录
-let dist = path.resolve(__dirname, './', 'dist/');
-let src = path.resolve(__dirname);
+let plugins = [
+    // CSS提取
+    new MiniCssExtractPlugin({
+        filename: "[name].[chunkhash].css",
+        chunkFilename: "[id].[chunkhash].css"
+    }),
+    new OptimizeCssAssetsPlugin(),  // CSS压缩
+    // 入口HTML 生成
+    new HtmlWebpackPlugin({
+        template: './assets/index.html',
+        favicon: './assets/favicon.ico',
+        filename: 'index.html',
+        title: '野路子',  // 与html-loader 会有冲突
+        chunks: ['login']
+    }),
+    new HtmlWebpackPlugin({
+        template: './assets/index.html',
+        favicon: './assets/favicon.ico',
+        filename: 'index.html',
+        title: '野路子',  // 与html-loader 会有冲突
+        chunks: ['operation']
+    }),
+    new VueLoaderPlugin(),
+    new CleanWebpackPlugin({cleanOnceBeforeBuildPatterns: [dist]})        // 清空dist
+];
+if (!args.includes('--inline')) {
+    plugins.push(new webpack.IgnorePlugin(/\/mock$/));    // 不是本地调试时，mock模块不打进包里
+}
 
-// webpack 配置
 module.exports = {
     // 入口文件
     entry: {
@@ -25,7 +50,6 @@ module.exports = {
     output: {
         // 输出目录
         path: dist,
-        //publicPath: '', 文件引用前缀
         // 输出文件名，[name]与入口文件同名
         filename: '[name]-[chunkhash].js'
     },
@@ -41,9 +65,6 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
-            }, {
-                test: /\.html$/,
-                loader: 'html-loader'
             }, {
                 // 目标文件
                 test: /\.css$/,
@@ -66,78 +87,47 @@ module.exports = {
                 ]
             }, {
                 test: /\.(js)$/,
-                // 排除目标
-                exclude: /(node_modules)/,
-                // 用babel-loader 编译 jsx，问号后面为参数。
-                //es2015插件包含了babel-plugin-transform-es2015-modules-commonjs，会把ES6模块转成CommonJS模块
-                loader: 'babel-loader?presets[]=es2015'
+                exclude: /(node_modules)/,       // 排除目标
+                loader: "babel-loader",
+                options: {
+                    babelrc: false,  // 不用配置文件
+                    presets: ["es2015"],
+                    plugins: [
+                        'transform-runtime',  // 转换ES7的一些关键字
+                        "syntax-dynamic-import", // 有这个插件才能异步加载模块
+                        // 按需导入element-ui组件，需要 babel-plugin-component 这个插件，可以在每个页面只引入所需的组件
+                        // ["component", {"libraryName": "element-ui", "styleLibraryName": "~theme"}]
+                    ]
+                }
             }, {
                 test: /\.(png|jpg|jpeg|gif|webp|svg)$/,
-                // 小于 8k的图片，输出为base64 dataurl
-                loader: 'url-loader?name=assets/images/[name].[hash:8].[ext]&limit=8192'
+                loader: "url-loader",
+                options: {
+                    name: 'assets/image/[name].[hash:8].[ext]',
+                    limit: 8192         // 小于 8k的图片，输出为base64 dataurl
+                }
             }, {
                 test: /\.(ttf|otf|woff|eot)$/,
-                // 字体转 dataurl
-                loader: 'url-loader?name=assets/fonts/[name].[hash:8].[ext]&limit=1024'
+                loader: "url-loader",
+                options: {   // 给loader的参数
+                    name: 'assets/font/[name].[hash:8].[ext]',
+                    limit: 1024         // 字体转 dataurl
+                }
             }, {
-                test: /\.json$/,
-                loader: 'json-loader'
+                test: /\.text$/,
+                loader: 'text-loader'     // 将字符串包装为模块
             }
         ]
     },
-    // optimization: {
-    //   // 模块拆分提取规则
-    //   splitChunks: {
-    //     /* 同时满足以下条件才拆分成单独文件 */
-    //     chunks: 'all', // 引用类型，all 表示 initial引用 + async引用
-    //     minSize: 30000, // 压缩前体积大于30000B
-    //     minChunks: 1,  // 引用数量大于 1
-    //     maxAsyncRequests: 5, // 异步引用数量小于5
-    //     maxInitialRequests: 3, // 初始引用数量小于3
-    //     /**********************************/
-    //     name: true,
-    //     // 缓存组
-    //     cacheGroups: {
-    //       vendors: {
-    //         name: 'vendors',
-    //         priority: 10, // 提取到本组的优先级
-    //         /* 将符合以下条件的模块提取到组 */
-    //         chunks: "all",
-    //         test: /node_modules\\/,
-    //         minSize: 30000,
-    //         minChunks: 1
-    //       }
-    //     }
-    //   }
-    // },
-    // 额外插件
-    plugins: [
-        // CSS提取 插件
-        new MiniCssExtractPlugin({
-            filename: "[name].[chunkhash].css",
-            chunkFilename: "[id].css"
-        }),
-        // 入口html生成 插件
-        new HtmlWebpackPlugin({
-            // 模板
-            template: './assets/index.html',
-            favicon:'./assets/favicon.ico',
-            filename: 'index.html',  // 目标文件名
-            title: '趣乡野',
-            chunks: ['operation', 'vendors']
-        }),
-        new HtmlWebpackPlugin({
-            template: './assets/index.html',
-            favicon:'./assets/favicon.ico',
-            filename: 'login.html',
-            title: '趣乡野登录',
-            chunks: ['login', 'vendors']
-        }),
-        new VueLoaderPlugin(),
-        new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['dist'],
-            })  // 清空dist
-    ],
+    // 插件
+    plugins: plugins,
+    optimization: {
+        /*
+        * splitChunks 配置 代替了 原先的CommonsChunkPlugin插件，用于提取多个 entry 公用的模块
+        * 有一个默认配置，node_modules下公用的模块打成 vendors bundle，引用超过两次的模块打到 default bundle
+        * */
+        splitChunks: {}
+    },
     // 配置 webpack-dev-server
     devServer: {
         historyApiFallback: true, // 允许路由
