@@ -51,7 +51,10 @@ module.exports = {
         // 输出目录
         path: dist,
         // 输出文件名，[name]与入口文件同名
-        filename: '[name]-[chunkhash].js'
+        filename: '[name]-[chunkhash].js',
+        // 入口服务器在国外，访问慢的话，可以设置publicPath，即访问JS、CSS、图片的前缀。
+        // 在国外 和 国内 部署两套代码，入口html访问国外，剩下的都访问过内
+        // publicPath: "http://128.2.3.3/"
     },
     resolve: {
         extensions: ['.js', '.vue'], // require 文件时可省略后缀 .js .vue
